@@ -28,49 +28,36 @@ class _OnboardScreen2State extends State<OnboardScreen2>{
           ),
         ),
         
-        // Overlay Image (e.g., logo)
-        Positioned(
-          top: 40,
-          left: 30,
-          child: SizedBox(
-            height: 370,
-            width: 370,
-            child: Image.asset(
-              'assets/onboard_screen2.jpg', // Your overlay image
-              width: 100, // You can adjust the size as needed
-              height: 100,
-            ),
-          ),
-        ),
+        
         
         
         // Text on top of the image
         Positioned(
-          bottom: 290,
-          left: 100,
-          child: Text(
-            'Strength through \n\t\t\t\t\t\tdiscipline.', // Text you want to overlay
-            style:GoogleFonts.roboto(
-                fontSize: 27,
-              fontWeight: FontWeight.w600,
-              color: Colors.white, // You can choose another color
-              shadows: [
-                Shadow(
-                  blurRadius: 10.0,
-                  color: Colors.black.withOpacity(0.7),
-                  offset:const Offset(5.0, 5.0),
-                ),
-              ],
-            )
-             
+          child: Center(
+            child: Text(
+              'Fight with Your \n\t\t\t\t\t\t\tHeart, \nWin with Your \n\t\t\t\t\t\t\tMind', // Text you want to overlay
+              style:GoogleFonts.roboto(
+                  fontSize: 27,
+                fontWeight: FontWeight.w600,
+                color: Colors.white, // You can choose another color
+                shadows: [
+                  Shadow(
+                    blurRadius: 10.0,
+                    color: Colors.black.withOpacity(0.7),
+                    offset:const Offset(5.0, 5.0),
+                  ),
+                ],
+              )
+               
+            ),
           ),
         ),
         Positioned(
-          bottom: 160,
+          bottom: 200,
           left: 90,
           child: SizedBox(
             child: Text(
-              '       Discipline builds the \nmental and physical strength\n \t\t\t\t\t\trequired for mastery.',
+              'Channel your passion and \ndetermination in the fight, \nbut use wisdom and strategy \nto secure the win',
               style:GoogleFonts.roboto(
                   fontSize: 16,
                 fontWeight: FontWeight.w400,

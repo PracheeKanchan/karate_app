@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:karate_app/view/auth/register_screen.dart';
+import 'package:karate_app/view/tab_bar/home_screen.dart';
 
 class LoginScreen extends StatefulWidget{
 
@@ -76,27 +77,36 @@ TextEditingController passwordController=TextEditingController();
               const SizedBox(height: 40,),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 30),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(vertical: 14),
-                  width: MediaQuery.of(context).size.width,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(5),
-                    gradient: const LinearGradient(
-                        colors: [
-                          Colors.red,
-                          Colors.black,
-                        ],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                      ),
-                  ),
-                  child: Center(
-                    child: Text(
-                      'Sign in',
-                      style: GoogleFonts.roboto(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.white,
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.pushReplacement(context, 
+                      MaterialPageRoute(builder: (context){
+                        return const HomeScreen();
+                      })
+                    );
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    width: MediaQuery.of(context).size.width,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(5),
+                      gradient: const LinearGradient(
+                          colors: [
+                            Colors.red,
+                            Colors.black,
+                          ],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                    ),
+                    child: Center(
+                      child: Text(
+                        'Sign in',
+                        style: GoogleFonts.roboto(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white,
+                        ),
                       ),
                     ),
                   ),

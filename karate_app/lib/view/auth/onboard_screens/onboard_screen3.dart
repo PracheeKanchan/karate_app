@@ -29,44 +29,32 @@ class _OnboardScreen3State extends State<OnboardScreen3>{
         ),
         
         // Overlay Image (e.g., logo)
-        Positioned(
-          top: 40,
-          left: 30,
-          child: SizedBox(
-            height: 370,
-            width: 370,
-            child: Image.asset(
-              'assets/onboard_screen3.jpg', // Your overlay image
-              width: 100, // You can adjust the size as needed
-              height: 100,
-            ),
-          ),
-        ),
+        
         
         
         // Text on top of the image
         Positioned(
-          bottom: 290,
-          left: 80,
-          child: Text(
-            '\t\t\t\t Practice that \n\tproduces results.', // Text you want to overlay
-            style:GoogleFonts.roboto(
-                fontSize: 27,
-              fontWeight: FontWeight.w600,
-              color: Colors.white, // You can choose another color
-              shadows: [
-                Shadow(
-                  blurRadius: 10.0,
-                  color: Colors.black.withOpacity(0.7),
-                  offset:const Offset(5.0, 5.0),
-                ),
-              ],
-            )
-             
+          child: Center(
+            child: Text(
+              '\t\t\t\t Practice that \n\tproduces results.', // Text you want to overlay
+              style:GoogleFonts.roboto(
+                  fontSize: 27,
+                fontWeight: FontWeight.w600,
+                color: Colors.white, // You can choose another color
+                shadows: [
+                  Shadow(
+                    blurRadius: 10.0,
+                    color: Colors.black.withOpacity(0.7),
+                    offset:const Offset(5.0, 5.0),
+                  ),
+                ],
+              )
+               
+            ),
           ),
         ),
         Positioned(
-          bottom: 160,
+          bottom: 200,
           left: 90,
           child: SizedBox(
             child: Text(

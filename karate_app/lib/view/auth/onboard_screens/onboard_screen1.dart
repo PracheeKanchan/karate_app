@@ -28,45 +28,32 @@ class _OnboardScreen1State extends State<OnboardScreen1>{
           ),
         ),
         
-        // Overlay Image (e.g., logo)
+              
+        // Text on top of the image
+        // Text on top of the image
         Positioned(
-          top: 40,
-          left: 30,
-          child: SizedBox(
-            height: 370,
-            width: 370,
-            child: Image.asset(
-              'assets/onboard_screen1.jpg', // Your overlay image
-              width: 100, // You can adjust the size as needed
-              height: 100,
+          
+          child: Center(
+            child: Text(
+              'Discipline Creates \n\t\t\t\t\t\t\t\tStrength,\n Strength Creates \n\t\t\t\t\t\t\t\tVictory.', // Text you want to overlay
+              style:GoogleFonts.roboto(
+                  fontSize: 27,
+                fontWeight: FontWeight.w600,
+                color: Colors.white, // You can choose another color
+                shadows: [
+                  Shadow(
+                    blurRadius: 10.0,
+                    color: Colors.black.withOpacity(0.7),
+                    offset:const Offset(5.0, 5.0),
+                  ),
+                ],
+              )
+               
             ),
           ),
         ),
-        
-        
-        // Text on top of the image
         Positioned(
-          bottom: 290,
-          left: 80,
-          child: Text(
-            'Elevate your game \n    to elite high\nschool player level.', // Text you want to overlay
-            style:GoogleFonts.roboto(
-                fontSize: 27,
-              fontWeight: FontWeight.w600,
-              color: Colors.white, // You can choose another color
-              shadows: [
-                Shadow(
-                  blurRadius: 10.0,
-                  color: Colors.black.withOpacity(0.7),
-                  offset:const Offset(5.0, 5.0),
-                ),
-              ],
-            )
-             
-          ),
-        ),
-        Positioned(
-          bottom: 160,
+          bottom: 200,
           left: 60,
           child: SizedBox(
             child: Text(

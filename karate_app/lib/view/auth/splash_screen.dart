@@ -39,46 +39,31 @@ class _SplashScreen extends State<SplashScreen>{
             ),
           ),
         ),
-        
-        // Overlay Image (e.g., logo)
+      
+        // Text on top of the image
         Positioned(
-          top: 40,
-          left: 30,
-          child: SizedBox(
-            height: 370,
-            width: 370,
-            child: Image.asset(
-              'assets/splash_image1.jpg', // Your overlay image
-              width: 100, // You can adjust the size as needed
-              height: 100,
+          
+          child: Center(
+            child: Text(
+              'MARTIAL ARTS \n  IS ONLY THE \nBEGINNING.....', // Text you want to overlay
+              style:GoogleFonts.roboto(
+                  fontSize: 27,
+                fontWeight: FontWeight.w600,
+                color: Colors.white, // You can choose another color
+                shadows: [
+                  Shadow(
+                    blurRadius: 10.0,
+                    color: Colors.black.withOpacity(0.7),
+                    offset:const Offset(5.0, 5.0),
+                  ),
+                ],
+              )
+               
             ),
           ),
         ),
-        
-        
-        // Text on top of the image
         Positioned(
-          bottom: 290,
-          left: 110,
-          child: Text(
-            'MARTIAL ARTS \n  IS ONLY THE \nBEGINNING.....', // Text you want to overlay
-            style:GoogleFonts.roboto(
-                fontSize: 27,
-              fontWeight: FontWeight.w600,
-              color: Colors.white, // You can choose another color
-              shadows: [
-                Shadow(
-                  blurRadius: 10.0,
-                  color: Colors.black.withOpacity(0.7),
-                  offset:const Offset(5.0, 5.0),
-                ),
-              ],
-            )
-             
-          ),
-        ),
-        Positioned(
-          bottom: 200,
+          bottom: 270,
           left: 70,
           child: Text(
             'Strength in every strike,Honor in\n                every move', // Text you want to overlay
