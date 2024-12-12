@@ -53,14 +53,14 @@ class MyDrawer extends StatelessWidget{
                   minTileHeight: 40,
                   leading: const Icon(
                     Icons.home,
-                    color: Color.fromRGBO(14,161,125,1),
+                    color:  Color.fromARGB(255, 157, 46, 38),
                   ),
                   title: Text(
                     'Home',
                      style: GoogleFonts.poppins(
                       fontSize: 16,
                       fontWeight: FontWeight.w400,
-                      color: const Color.fromRGBO(14,161,125,1),
+                      color: Colors.black,
                      ),  
                   ),
                   onTap: () {
@@ -83,7 +83,7 @@ class MyDrawer extends StatelessWidget{
                   minTileHeight: 40,
                   leading: const Icon(
                     Icons.model_training,
-                    color: Color.fromRGBO(14,161,125,1),
+                    color:  Color.fromARGB(255, 157, 46, 38),
                   ),
                   title: Text(
                     'My Training',
@@ -113,7 +113,7 @@ class MyDrawer extends StatelessWidget{
                   minTileHeight: 40,
                   leading: const Icon(
                     Icons.food_bank_outlined,
-                    color: Color.fromRGBO(14,161,125,1),
+                    color: Color.fromARGB(255, 157, 46, 38),
                   ),
                   title: Text(
                     'Meals Plan',
@@ -143,7 +143,7 @@ class MyDrawer extends StatelessWidget{
                   minVerticalPadding: 10,
                   leading: const Icon(
                     Icons.notifications,
-                    color: Color.fromRGBO(14,161,125,1),
+                    color: Color.fromARGB(255, 157, 46, 38),
                   ),
                   title: Text(
                     'Reminder',
@@ -173,7 +173,7 @@ class MyDrawer extends StatelessWidget{
                   minVerticalPadding: 10,
                   leading: const Icon(
                     Icons.person,
-                    color: Color.fromRGBO(14,161,125,1),
+                    color:  Color.fromARGB(255, 157, 46, 38),
                   ),
                   title: Text(
                     'Profile',
