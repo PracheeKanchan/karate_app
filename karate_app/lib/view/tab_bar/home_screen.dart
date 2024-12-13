@@ -3,6 +3,9 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:karate_app/drawer.dart';
+import 'package:karate_app/view/dashboard_screens/question_answer_screen.dart';
+import 'package:karate_app/view/tab_bar/news_screen.dart';
+import 'package:karate_app/view/tab_bar/style_training.dart';
 
 class HomeScreen extends StatefulWidget{
 
@@ -25,7 +28,8 @@ int _selectedIndex = 0;
   // List of screens to display based on selected tab
   final List<Widget> _screens = [
     const HomeTabScreen(),
-    
+    StyleTraining(),
+    const NewsScreen(),
   ];
 
     @override
@@ -434,40 +438,49 @@ class _HomeTabScreenState extends State<HomeTabScreen> {
                     ),
                   ),
                   const SizedBox(height: 15,),
-                  Container(
-                          width: MediaQuery.of(context).size.width,
-                          height: 150,
-                          margin: const EdgeInsets.only(right: 0), // Space between containers
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(12), // Optional rounded corners
-                            color: Colors.black,
-                          ),
-                          child: Stack(
-                            children: [
-                                   Positioned.fill(
-                                      child: Opacity(
-                                        opacity: 0.5, // Adjust opacity to make the background semi-transparent
-                                        child: ClipRRect(
-                                          borderRadius: BorderRadius.circular(12),
-                                          child: Image.asset(
-                                            'assets/HomeScreenImage/knowledge.jpg', // Your background image
-                                            fit: BoxFit.cover,
+                  GestureDetector(
+                    onTap: (){
+                      Navigator.push(context, 
+                        MaterialPageRoute(builder: (context){
+                          return const QuestionAnswerScreen();
+                        })
+                      );
+                    },
+                    child: Container(
+                            width: MediaQuery.of(context).size.width,
+                            height: 150,
+                            margin: const EdgeInsets.only(right: 0), // Space between containers
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(12), // Optional rounded corners
+                              color: Colors.black,
+                            ),
+                            child: Stack(
+                              children: [
+                                     Positioned.fill(
+                                        child: Opacity(
+                                          opacity: 0.5, // Adjust opacity to make the background semi-transparent
+                                          child: ClipRRect(
+                                            borderRadius: BorderRadius.circular(12),
+                                            child: Image.asset(
+                                              'assets/HomeScreenImage/knowledge.jpg', // Your background image
+                                              fit: BoxFit.cover,
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                  ),
-                                  const Positioned(
-                                    bottom: 20,
-                                    left: 20,
-                                      child: Text(
-                                        'Knowledge Lab',
-                                        style: TextStyle(color: Colors.white, fontSize: 20),
-                                      ),
-                                  ),
-                            ],
+                                    ),
+                                    const Positioned(
+                                      bottom: 20,
+                                      left: 20,
+                                        child: Text(
+                                          'Knowledge Lab',
+                                          style: TextStyle(color: Colors.white, fontSize: 20),
+                                        ),
+                                    ),
+                              ],
+                            ),
+                            
                           ),
-                          
-                        ),
+                  ),
                 ],
               ),
             ),
