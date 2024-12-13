@@ -89,7 +89,7 @@ class _SplashScreen extends State<SplashScreen>{
             padding: const EdgeInsets.only(left: 20,right: 30),
             child: GestureDetector(
               onTap: (){
-                Navigator.of(context).push(
+                Navigator.of(context).pushReplacement(
                     MaterialPageRoute(builder: (context){
                       return const OnboardScreen1();
                     })

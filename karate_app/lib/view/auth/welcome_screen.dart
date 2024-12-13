@@ -43,7 +43,7 @@ class _LoginScreenState extends State<WelcomeScreen>{
               const SizedBox(height: 30,),
               GestureDetector(
                 onTap: () {
-                  Navigator.of(context).push(
+                  Navigator.of(context).pushReplacement(
                     MaterialPageRoute(builder: (context){
                       return const LoginScreen();
                     })
@@ -77,7 +77,7 @@ class _LoginScreenState extends State<WelcomeScreen>{
               const SizedBox(height: 20,),
               GestureDetector(
                 onTap: (){
-                    Navigator.push(context, 
+                    Navigator.pushReplacement(context, 
                       MaterialPageRoute(builder: (context){
                         return const RegisterScreen();
                       })

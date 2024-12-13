@@ -64,7 +64,7 @@ void _showBottomSheet(BuildContext context, String question, String answer) {
           children: [
             Positioned(
               child: Image.asset(
-                'assets/question_screen.jpg',  // Replace with your image
+                'assets/knowledge_lab/question_screen.jpg',  // Replace with your image
                 fit: BoxFit.cover,
               ),
             ),
@@ -133,7 +133,7 @@ void _showBottomSheet(BuildContext context, String question, String answer) {
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(15),
                           ),
-                          child: ClipRRect(borderRadius: BorderRadius.circular(15),child:  Image.asset('assets/news_image.jpg',fit: BoxFit.cover,)),
+                          child: ClipRRect(borderRadius: BorderRadius.circular(15),child:  Image.asset('assets/knowledge_lab/Q&A_image.jpg',fit: BoxFit.cover,)),
                         ),
                         const SizedBox(width: 20,),
                         Expanded(

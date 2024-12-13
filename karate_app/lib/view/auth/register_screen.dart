@@ -80,27 +80,32 @@ TextEditingController confirmPasswordController=TextEditingController();
               const SizedBox(height: 40,),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 30),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(vertical: 14),
-                  width: MediaQuery.of(context).size.width,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(5),
-                    gradient: const LinearGradient(
-                        colors: [
-                          Colors.red,
-                          Colors.black,
-                        ],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                      ),
-                  ),
-                  child: Center(
-                    child: Text(
-                      'Sign up',
-                      style: GoogleFonts.roboto(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.white,
+                child: GestureDetector(
+                  onTap: (){
+                    Navigator.pop(context);
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    width: MediaQuery.of(context).size.width,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(5),
+                      gradient: const LinearGradient(
+                          colors: [
+                            Colors.red,
+                            Colors.black,
+                          ],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                    ),
+                    child: Center(
+                      child: Text(
+                        'Sign up',
+                        style: GoogleFonts.roboto(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white,
+                        ),
                       ),
                     ),
                   ),

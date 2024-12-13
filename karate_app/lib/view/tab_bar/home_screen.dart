@@ -40,7 +40,7 @@ int _selectedIndex = 0;
       return Scaffold(
           appBar:AppBar(
             title: Text(
-              'Karate',
+              'Hello Prachee',
               style: GoogleFonts.poppins(
                 fontSize: 20,
                 fontWeight: FontWeight.w500,

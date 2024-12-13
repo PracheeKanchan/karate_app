@@ -74,37 +74,13 @@ class _OnboardScreen2State extends State<OnboardScreen2>{
             ),
           ),
         ),
-        Positioned(
-          bottom: 40,
-          left: 10,
-          child: GestureDetector(
-            onTap: (){
-              Navigator.of(context).push(
-                MaterialPageRoute(builder: (context){
-                  return const OnboardScreen1();
-                })
-              );
-            },
-            child: Container(
-              height: 50,
-              width: 50,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(color: Colors.white),
-              ),
-              child: const Icon(
-                Icons.navigate_before_outlined,
-                color: Colors.white,
-              ),
-            ),
-          ),
-        ),
+        
         Positioned(
           bottom: 40,
           right: 10,
           child: GestureDetector(
             onTap: (){
-              Navigator.push(context, 
+              Navigator.pushReplacement(context, 
               MaterialPageRoute(builder: (context){
                 return const OnboardScreen3();
               }));
