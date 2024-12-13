@@ -37,7 +37,7 @@ void _showBottomSheet(BuildContext context, String question, String answer) {
                 Text(
                   answer,
                   style: GoogleFonts.poppins(
-                    fontSize: 15,
+                    fontSize: 14,
                     fontWeight: FontWeight.w400,
                   ),
                 ),
@@ -145,7 +145,7 @@ void _showBottomSheet(BuildContext context, String question, String answer) {
                                             question,
                                             style: GoogleFonts.inter(
                                             fontSize: 14, 
-                                            fontWeight: FontWeight.w500,
+                                            fontWeight: FontWeight.w600,
                                             color: Colors.black,
                                             ),
                                             trimLines: 2,
@@ -161,8 +161,8 @@ void _showBottomSheet(BuildContext context, String question, String answer) {
                                 child: ReadMoreText(
                                             answer,
                                             style: GoogleFonts.inter(
-                                            fontSize: 14, 
-                                            fontWeight: FontWeight.w500,
+                                            fontSize: 12, 
+                                            fontWeight: FontWeight.w400,
                                             color: Colors.black,
                                             ),
                                             trimLines: 2,

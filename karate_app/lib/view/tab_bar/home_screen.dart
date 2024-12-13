@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:karate_app/drawer.dart';
 import 'package:karate_app/view/dashboard_screens/question_answer_screen.dart';
 import 'package:karate_app/view/tab_bar/news_screen.dart';
+import 'package:karate_app/view/tab_bar/profile_screen.dart';
 import 'package:karate_app/view/tab_bar/style_training.dart';
 
 class HomeScreen extends StatefulWidget{
@@ -30,6 +31,7 @@ int _selectedIndex = 0;
     const HomeTabScreen(),
     StyleTraining(),
     const NewsScreen(),
+    const ProfilePage()
   ];
 
     @override

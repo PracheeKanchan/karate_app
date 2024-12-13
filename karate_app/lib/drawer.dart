@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:karate_app/view/drawer_screens/my_training.dart';
 import 'package:karate_app/view/drawer_screens/reminder_screen.dart';
 import 'package:karate_app/view/tab_bar/home_screen.dart';
+import 'package:karate_app/view/tab_bar/profile_screen.dart';
 
 class MyDrawer extends StatelessWidget{
 
@@ -170,36 +171,7 @@ class MyDrawer extends StatelessWidget{
                   },
                 ),
               ),
-              Container(
-                margin: const EdgeInsets.only(top: 10,),
-                decoration: const BoxDecoration(
-                  borderRadius: BorderRadius.only(
-                          topRight: Radius.circular(20),
-                          bottomRight: Radius.circular(20)
-                  ),
-                  //color: Color.fromRGBO(14,161,125,0.15),
-                ),
-                child: ListTile(
-                  minTileHeight: 40,
-                  minVerticalPadding: 10,
-                  leading: const Icon(
-                    Icons.person,
-                    color:  Color.fromARGB(255, 157, 46, 38),
-                  ),
-                  title: Text(
-                    'Profile',
-                     style: GoogleFonts.poppins(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w400,
-                      color: Colors.black,
-                     ),  
-                  ),
-                  onTap: () {
-                    // Handle navigation here
-                    Navigator.pop(context); // Close the drawer
-                  },
-                ),
-              ),
+              
                 ],
               ),
             ),
