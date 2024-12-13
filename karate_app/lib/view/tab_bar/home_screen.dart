@@ -54,7 +54,7 @@ int _selectedIndex = 0;
                       label: 'Home',
                     ),
                     BottomNavigationBarItem(
-                      icon: Icon(Icons.fitness_center),
+                      icon: Icon(Icons.model_training),
                       label: 'Training',
                     ),
                     BottomNavigationBarItem(
@@ -97,7 +97,7 @@ class _HomeTabScreenState extends State<HomeTabScreen> {
     _pageController = PageController();  // Initialize PageController
 
     // Automatically slide after some time (e.g., every 3 seconds)
-    Timer.periodic(Duration(seconds: 3), (timer) {
+    Timer.periodic(const Duration(seconds: 3), (timer) {
       if (_currentIndex < _imageUrls.length - 1) {
         _currentIndex++;
       } else {
@@ -158,7 +158,7 @@ class _HomeTabScreenState extends State<HomeTabScreen> {
                     ),
                   ),
                   const SizedBox(height: 15,),
-                  Container(
+                  SizedBox(
                   height: 200, // Height of the container (adjust as needed)
                   child: ListView(
                     scrollDirection: Axis.horizontal, // Makes the list scroll horizontally
@@ -294,7 +294,7 @@ class _HomeTabScreenState extends State<HomeTabScreen> {
                     ),
                   ),
                   const SizedBox(height: 15,),
-                  Container(
+                  SizedBox(
                   height: 150, // Height of the container (adjust as needed)
                   child: ListView(
                     scrollDirection: Axis.horizontal, // Makes the list scroll horizontally

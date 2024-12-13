@@ -1,6 +1,9 @@
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:karate_app/view/drawer_screens/my_training.dart';
+import 'package:karate_app/view/drawer_screens/reminder_screen.dart';
+import 'package:karate_app/view/tab_bar/home_screen.dart';
 
 class MyDrawer extends StatelessWidget{
 
@@ -95,7 +98,11 @@ class MyDrawer extends StatelessWidget{
                   ),
                   onTap: () {
                     // Handle navigation here
-                    Navigator.pop(context); // Close the drawer
+                    Navigator.pushReplacement(context, 
+                      MaterialPageRoute(builder: (context){
+                        return const MyTrainingScreen();
+                      })
+                    );
                   },
                 ),
               ),
@@ -155,7 +162,11 @@ class MyDrawer extends StatelessWidget{
                   ),
                   onTap: () {
                     // Handle navigation here
-                    Navigator.pop(context); // Close the drawer
+                     Navigator.pushReplacement(context, (
+                      MaterialPageRoute(builder: (context){
+                        return const MyReminderScreen();
+                      })
+                     ));
                   },
                 ),
               ),

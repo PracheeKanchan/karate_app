@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:karate_app/view/auth/splash_screen.dart';
+import 'package:karate_app/view/drawer_screens/my_training.dart';
 
 void main(){
   runApp(const MyApp());
