@@ -20,6 +20,7 @@ class BegineerLevelScreen extends StatelessWidget {
           onTap: () {
             Navigator.pop(context);
           },
+          
           child: const Icon(
             Icons.navigate_before_outlined, color: Colors.black, size: 30,
           ),

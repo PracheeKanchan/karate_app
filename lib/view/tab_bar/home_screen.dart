@@ -173,7 +173,7 @@ class _HomeTabScreenState extends State<HomeTabScreen> {
                 onTap: () {
                   Navigator.push(context, 
                     MaterialPageRoute(builder: (context){
-                      return BegineerLevelScreen();
+                      return const BegineerLevelScreen();
                     })
                   );
                 },
