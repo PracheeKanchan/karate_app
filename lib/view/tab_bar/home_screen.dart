@@ -8,6 +8,7 @@ import 'package:karate_app/view/dashboard_screens/book_screen.dart';
 import 'package:karate_app/view/dashboard_screens/question_answer_screen.dart';
 import 'package:karate_app/view/dashboard_screens/stance_screen.dart';
 import 'package:karate_app/view/dashboard_screens/warm_up_screen.dart';
+import 'package:karate_app/view/dashboard_screens/white_belt_tracker.dart';
 import 'package:karate_app/view/tab_bar/news_screen.dart';
 import 'package:karate_app/view/tab_bar/profile_screen.dart';
 
@@ -41,8 +42,9 @@ int _selectedIndex = 0;
 
       return Scaffold(
           appBar:AppBar(
+            toolbarHeight: 100,
             title: Text(
-              'Hello Prachee',
+              'Hello, Prachee',
               style: GoogleFonts.poppins(
                 fontSize: 20,
                 fontWeight: FontWeight.w500,
@@ -156,7 +158,94 @@ class _HomeTabScreenState extends State<HomeTabScreen> {
                   ),
                   const SizedBox(height: 15,),
                   Text(
-                    'Class',
+                    'My Classes',
+                    style: GoogleFonts.poppins(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                   const SizedBox(height: 15,),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(context, MaterialPageRoute(builder: (context){
+                        return const VerticalStepperWithHorizontalStepper();
+                      }));
+                    },
+                    child: Container(
+                      width: 300,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(15),
+                        color: Colors.white,
+                        boxShadow: const[
+                          BoxShadow(
+                            color: Colors.grey,
+                            blurRadius: 10,
+                    
+                          ),
+                        ],
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            height: 150,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(15),
+                              
+                            ),
+                            child: Stack(
+                              children: [
+                                Positioned.fill( 
+                                                    child: ClipRRect(
+                                                      borderRadius: BorderRadius.circular(12),
+                                                      child: Image.asset(
+                                                        'assets/beginner_level_screen/white_belt.jpg', // Your background image
+                                                        fit: BoxFit.cover,
+                                                      ),
+                                                    ),
+                                                ),
+                                                
+                                    ],
+                                  ),
+                                ),
+                    
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 10,horizontal: 15),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'White Belt',
+                                  style: GoogleFonts.poppins(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                                const SizedBox(height: 10),
+                                LinearProgressIndicator(
+                                    value: 0.5, // The progress from 0.0 to 1.0 (0.0 is no progress, 1.0 is complete)
+                                    minHeight: 8, // Adjust the height of the progress bar
+                                    color: Colors.green, // Set the color of the progress bar
+                                    backgroundColor: Colors.grey[300], // Set the background color
+                                ),
+                                const SizedBox(height: 10),
+                                Text(
+                                  '32% completed',
+                                  style: GoogleFonts.poppins(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w300,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 15,),
+                  Text(
+                    'Classes',
                     style: GoogleFonts.poppins(
                       fontSize: 20,
                       fontWeight: FontWeight.w500,

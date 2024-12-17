@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:karate_app/view/dashboard_screens/course_details.dart';
+import 'package:karate_app/view/dashboard_screens/payment_screen.dart';
 
 class BegineerLevelScreen extends StatelessWidget {
   const BegineerLevelScreen({super.key});
@@ -70,34 +72,123 @@ class BeltContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-              height: 250,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(15),
-                color: Colors.white,
-                
-              ),
-              child: Stack(
-                children: [
-                  Positioned.fill( bottom: 50,
-                                      child: ClipRRect(
-                                        borderRadius: BorderRadius.circular(12),
-                                        child: Image.asset(
-                                          imageUrl, // Your background image
-                                          fit: BoxFit.cover,
-                                        ),
-                                      ),
-                                  ),
-                                   Positioned(
-                                      bottom: 10,     
-                                      left: 120,                               
-                                      child:  Text(
-                                        beltName,
-                                        style: const TextStyle(color: Colors.black, fontSize: 20),
-                                      ),
-                                  ),
-                ],
-              ),
-            );
+      
+       decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(15),
+          color: Colors.white,   
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          GestureDetector(
+            onTap: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(builder: (context){
+                  return CourseDetailsScreen();
+                })
+              );
+            },
+            child: Container(
+                      height: 200,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(15),
+                        
+                      ),
+                      child: Stack(
+                        children: [
+                          Positioned.fill( 
+                                              child: ClipRRect(
+                                                borderRadius: BorderRadius.circular(12),
+                                                child: Image.asset(
+                                                  imageUrl, // Your background image
+                                                  fit: BoxFit.cover,
+                                                ),
+                                              ),
+                                          ),
+                                           
+                        ],
+                      ),
+                    ),
+          ),
+        
+                  Padding(
+                    padding: const EdgeInsets.only(left: 15,right: 15,top: 15,bottom: 10),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          beltName,
+                          style: GoogleFonts.poppins(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                        RichText(
+                          text: TextSpan(
+                            children: [
+                                TextSpan(
+                                  text: '6 ',
+                                  style: GoogleFonts.poppins(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w500,
+                                      color: Colors.blue,
+                                    ),
+                                ),
+                                TextSpan(
+                                  text: 'Topics',
+                                  style: GoogleFonts.poppins(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w300,
+                                      color: Colors.grey[600],
+                                    ),
+                                ),
+                            ],
+                          ),
+                        ),
+                        Text(
+                          '₹ 4000/-',
+                          style: GoogleFonts.poppins(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w400,
+                            color: Colors.black,
+                          ),
+                        ),
+                        
+                      ],
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(context, MaterialPageRoute(builder: (context){
+                        return const PaymentScreen();
+                      }));
+                    },
+                    child: Container(
+                            height: 50,
+                            decoration: BoxDecoration(
+                              borderRadius: const BorderRadius.only(
+                                topLeft: Radius.circular(15),
+                                topRight: Radius.circular(15),
+                                bottomLeft: Radius.circular(5),
+                                bottomRight: Radius.circular(5),
+                              ),
+                              color: Colors.blue[700],
+                            ),
+                            child: Center(
+                              child: Text(
+                                    'Buy Now',
+                                    style: GoogleFonts.poppins(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w600,
+                                      color: Colors.white,
+                                     ),
+                                    ),
+                                    ),
+                          ),
+                  ),
+        ],
+      ),
+    );
   }
 }
 
