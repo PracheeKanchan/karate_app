@@ -1,7 +1,21 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:readmore/readmore.dart';
 
+class StanceModel{
+
+  String imageUrl;
+  String title;
+  String subTitle;
+
+  StanceModel({
+      required this.imageUrl,
+      required this.title,  
+      required this.subTitle, 
+      ///required this.email,  
+  });
+}
 
 
 class StanceScreen extends StatefulWidget {
@@ -13,7 +27,27 @@ class StanceScreen extends StatefulWidget {
 
 class _StanceScreenState extends State<StanceScreen> {
   
-  
+  List<StanceModel> stanceList=[];
+
+  @override
+  void initState(){
+    super.initState();
+    getFirebaseData();
+  }
+void getFirebaseData()async{
+  QuerySnapshot response=await FirebaseFirestore.instance.collection("stanceCollection").get();
+
+  for(int i=0;i<response.docs.length;i++){
+    stanceList.add(
+      StanceModel(
+        imageUrl: response.docs[i]['imageUrl'], 
+        title: response.docs[i]['title'], 
+        subTitle: response.docs[i]['subTitle'],
+      )
+    );
+  }
+  setState(() {});
+}
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -43,7 +77,7 @@ class _StanceScreenState extends State<StanceScreen> {
         automaticallyImplyLeading: false,  // Prevents default back button
       ),
       body: ListView.builder(
-        itemCount: 10,
+        itemCount:stanceList.length,
         shrinkWrap: true,
         itemBuilder: (context, index) {
           return Padding(
@@ -67,7 +101,9 @@ class _StanceScreenState extends State<StanceScreen> {
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(15),
                         ),
-                        child: ClipRRect(borderRadius: BorderRadius.circular(15),child:  Image.asset('assets/stance/stance1.jpg',fit: BoxFit.fill,)),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(15),
+                          child:  Image.asset(stanceList[index].imageUrl,fit: BoxFit.fill,)),
                       ),
                       const SizedBox(width: 10,),
                       Expanded(
@@ -75,32 +111,32 @@ class _StanceScreenState extends State<StanceScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             SizedBox(
-                              child: ReadMoreText(
-                                          'Informal attention stance',
-                                          style: GoogleFonts.inter(
-                                          fontSize: 14, 
-                                          fontWeight: FontWeight.w500,
-                                          color: Colors.black,
-                                          ),
-                                          trimLines: 2,
-                                          colorClickableText: Colors.blue,
-                                          trimExpandedText: '...Read Less',
-                                          trimCollapsedText: '...Read More',
-                                          trimMode: TrimMode.Line,
-                                      ),
-                            ),
-                        
-                            Container(
-                              padding:const EdgeInsets.only(top: 3,bottom: 5),
                               child: Text(
-                                'Heisoku-dachi',
-                                style: GoogleFonts.poppins(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w300,
-                                ),
+                                            stanceList[index].title,
+                                            style: GoogleFonts.inter(
+                                            fontSize: 14, 
+                                            fontWeight: FontWeight.w600,
+                                            color: Colors.black,
+                                            ),
+                                            maxLines: 3,
+                                            overflow:TextOverflow.ellipsis,
+                                        ),
                               ),
-                            ),
-                            
+                          
+                              Container(
+                                padding:const EdgeInsets.only(top: 3,bottom: 5),
+                                child: Text(
+                                            stanceList[index].subTitle,
+                                            style: GoogleFonts.inter(
+                                            fontSize: 12, 
+                                            fontWeight: FontWeight.w400,
+                                            color: Colors.black,
+                                            ),
+                                            maxLines: 2,
+                                            overflow: TextOverflow.ellipsis,
+                                        ),
+                              ),
+
                           ],
                         ),
                       ),

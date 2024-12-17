@@ -33,7 +33,7 @@ int _selectedIndex = 0;
   // List of screens to display based on selected tab
   final List<Widget> _screens = [
     const HomeTabScreen(),
-    const NewsScreen(),
+    const NewsHomePage(),
     const ProfilePage()
   ];
 
@@ -50,6 +50,7 @@ int _selectedIndex = 0;
                 fontWeight: FontWeight.w500,
               ),
             ),
+            surfaceTintColor: Colors.white,
           ),
           drawer: const MyDrawer(),
           body: _screens[_selectedIndex], // Display the selected screen
@@ -168,7 +169,7 @@ class _HomeTabScreenState extends State<HomeTabScreen> {
                   GestureDetector(
                     onTap: () {
                       Navigator.push(context, MaterialPageRoute(builder: (context){
-                        return const VerticalStepperWithHorizontalStepper();
+                        return const TrainingProgressTracker(completedDays: 10);
                       }));
                     },
                     child: Container(

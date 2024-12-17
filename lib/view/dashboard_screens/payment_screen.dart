@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:karate_app/view/tab_bar/home_screen.dart';
 
 
 class PaymentScreen extends StatelessWidget {
@@ -41,7 +42,12 @@ class PaymentScreen extends StatelessWidget {
           actions: <Widget>[
             TextButton(
               onPressed: () {
+                //close dialog box
                 Navigator.of(context).pop();
+                //close payment screen
+                Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context){
+                  return const HomeScreen();
+                }));
               },
               child: Text(
               'Close',

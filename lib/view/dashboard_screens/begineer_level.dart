@@ -82,9 +82,9 @@ class BeltContainer extends StatelessWidget {
         children: [
           GestureDetector(
             onTap: () {
-              Navigator.of(context).push(
+              Navigator.of(context).pushReplacement(
                 MaterialPageRoute(builder: (context){
-                  return CourseDetailsScreen();
+                  return const CourseDetailsScreen();
                 })
               );
             },
@@ -159,7 +159,7 @@ class BeltContainer extends StatelessWidget {
                   ),
                   GestureDetector(
                     onTap: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context){
+                      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context){
                         return const PaymentScreen();
                       }));
                     },

@@ -5,16 +5,53 @@ import 'package:karate_app/view/dashboard_screens/payment_screen.dart';
 
 
 class CourseDetailsScreen extends StatefulWidget {
-   CourseDetailsScreen({super.key});
+   const CourseDetailsScreen({super.key});
 
   @override
   State<CourseDetailsScreen> createState() => _CourseDetailsScreenState();
 }
 
 class _CourseDetailsScreenState extends State<CourseDetailsScreen> {
-   bool _isExpanded = false;
+   
 
+List<Map> syllabusList=[
+  
+  {
+    'title':'FITNESS',
+    'description' : '1. Basic Routine.\n2. Leg Stretching',
+    'isExpanded':false
+  },
+  {
+    'title':'KIHONS TRADITIONAL',
+    'description' : 'From Zenkutsu Dachi Gedan Barai: -\n1. Step Forward Oi Zuki 5 - Times, Mawatte.\n2. Step Forward Age Uke 5 - Times, Mawatte.\n3. Step Forward Soto Uke 5 - Times, Mawatte.',
+    'isExpanded':false
+  
+  },
+  {
+    'title':'KIHONS – SPORTS',
+    'description' : '1. Gyaku zuki front leg forward and back in two counts\n2. Kizami zuki front forward and back in two counts\n3. Back leg mawashi geri put leg forward and step back',
+    'isExpanded':false
+  
+  },
+  {
+    'title':'KATA',
+    'description' : 'Taikyoku Shodan (Perfect) / Taikyoku Nidan (Basic)',
+    'isExpanded':false
+  
+  },
+  {
+    'title':'KUMITE',
+    'description' : 'Sports Kumite with single technique attack and deffence.',
+    'isExpanded':false
+  
+  },
+  {
+    'title':'STANCE',
+    'description' : 'Zenkutsu Dachi & Kiba Dachi.',
+    'isExpanded':false
 
+  },
+];
  @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,6 +63,7 @@ class _CourseDetailsScreenState extends State<CourseDetailsScreen> {
             fontWeight: FontWeight.w500,
            ),
           ),
+          surfaceTintColor: Colors.white,
       ),
       body: Column(
         children: [
@@ -140,62 +178,76 @@ class _CourseDetailsScreenState extends State<CourseDetailsScreen> {
                     const SizedBox(height: 20),
                     
                     // 8. Expandable container section
-                    Container(
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.grey),
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Column(
-        children: [
-          // Header Row with Circle Image and Text
-          Row(
-            children: [
-              // Text Info
-              const Padding(
-                padding: const EdgeInsets.all(12.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Fitness',
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    ListView.builder(
+                      itemCount: syllabusList.length,
+                      shrinkWrap: true,
+                      itemBuilder: (context, index) {
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 20),
+                          child: Container(
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.grey),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              // Header Row with Circle Image and Text
+                              Row(
+                                children: [
+                                  // Text Info
+                                   Padding(
+                                    padding: const EdgeInsets.all(12.0),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          syllabusList[index]['title'],
+                                          style:const  TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                                        ),
+                                        const SizedBox(height: 5),
+                                      ],
+                                    ),
+                                  ),
+                                  const Spacer(),
+                                  // Down Arrow Button
+                                  IconButton(
+                                    icon: Icon(
+                                      syllabusList[index]['isExpanded'] ? Icons.expand_less : Icons.expand_more,
+                                      color: Colors.blue,
+                                    ),
+                                    onPressed: () {
+                                      setState(() {
+                                        syllabusList[index]['isExpanded'] = !syllabusList[index]['isExpanded'];
+                                      });
+                                    },
+                                  ),
+                                ],
+                              ),
+                              
+                              // Expanded Content
+                              if (syllabusList[index]['isExpanded'])
+                               Padding(
+                                  padding: const EdgeInsets.all(10.0),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                          syllabusList[index]['description'],
+                                          style:const  TextStyle(fontSize: 16, ),
+                                        ),
+                                     const SizedBox(height: 5),
+                                      
+                                    ],
+                                  ),
+                                ),
+                            ],
+                          ),
+                                                ),
+                        );
+                      },
+                      
                     ),
-                    SizedBox(height: 5),
-                  ],
-                ),
-              ),
-              Spacer(),
-              // Down Arrow Button
-              IconButton(
-                icon: Icon(
-                  _isExpanded ? Icons.expand_less : Icons.expand_more,
-                  color: Colors.blue,
-                ),
-                onPressed: () {
-                  setState(() {
-                    _isExpanded = !_isExpanded;
-                  });
-                },
-              ),
-            ],
-          ),
-          
-          // Expanded Content
-          if (_isExpanded)
-            const Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('1. Basic Routine.\n2. Leg Stretching )', style: TextStyle(fontSize: 14)),
-                  SizedBox(height: 5),
-                  
-                ],
-              ),
-            ),
-        ],
-      ),
-    ),
                   ],
                 ),
               ),

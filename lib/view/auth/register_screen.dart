@@ -11,6 +11,7 @@ class RegisterScreen extends StatefulWidget{
 
 class _RegisterScreenState extends State<RegisterScreen>{
 
+TextEditingController userNnameController=TextEditingController();
 TextEditingController emailController=TextEditingController();
 TextEditingController passwordController=TextEditingController();
 TextEditingController confirmPasswordController=TextEditingController();
@@ -41,6 +42,18 @@ TextEditingController confirmPasswordController=TextEditingController();
                 ),
               ),
               const SizedBox(height: 40,),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 30),
+                child: TextField(
+                  controller: userNnameController,
+                  decoration: const InputDecoration(
+                    hintText: 'Enter username',
+                    border: OutlineInputBorder(),
+                  ),
+                  
+                ),
+              ),
+              const SizedBox(height: 30,),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 30),
                 child: TextField(

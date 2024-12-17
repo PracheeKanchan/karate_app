@@ -1,100 +1,256 @@
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:readmore/readmore.dart';
 
+class NewsHomePage extends StatefulWidget {
+  const NewsHomePage({super.key});
 
-
-class NewsScreen extends StatefulWidget {
-
-  const NewsScreen({super.key});
   @override
-  State createState() => _NewsScreenState();
+  State<NewsHomePage> createState() => _NewsHomePageState();
 }
 
-class _NewsScreenState extends State<NewsScreen> {
-  
+class _NewsHomePageState extends State<NewsHomePage> {
+  List<dynamic> articles=[];
+  bool isLoading = true;
+  String? error;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchArticles();
+  }
+
+  Future<void> fetchArticles() async {
+    try {
+      final response = await http.get(
+        Uri.parse(
+            'https://saurav.tech/NewsAPI/top-headlines/category/health/in.json'),
+      );
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> data = json.decode(response.body);
+        setState(() {
+          articles = data['articles'] as List;
+          isLoading = false;
+        });
+      } else {
+        setState(() {
+          error = 'Failed to load articles';
+          isLoading = false;
+        });
+      }
+    } catch (e) {
+      setState(() {
+        error = 'Error: ${e.toString()}';
+        isLoading = false;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (error != null) {
+      return Scaffold(
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(error!),
+              ElevatedButton(
+                onPressed: () {
+                  setState(() {
+                    isLoading = true;
+                    error = null;
+                  });
+                  fetchArticles();
+                },
+                child: const Text('Retry'),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    return NewsListScreen(articles: articles!);
+  }
+}
+
+class NewsListScreen extends StatelessWidget {
+  final List<dynamic> articles;
+
+  const NewsListScreen({super.key, required this.articles});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       
-      body: ListView.builder(
-        itemCount: 10,
-        shrinkWrap: true,
-        itemBuilder: (context, index) {
-          return Padding(
-              padding: const EdgeInsets.only(left: 15,right: 15,top: 15),
-              child: Container(
-                  //height: 100,
-                  width: MediaQuery.of(context).size.width,
-                  padding: const EdgeInsets.symmetric(vertical: 10,horizontal: 10),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(15),
-                    color: Colors.white,
-                    boxShadow: const [
-                      BoxShadow(
-                        offset: Offset(0,7),
-                        blurRadius: 8,
-                        spreadRadius: 0,
-                        color: Color.fromARGB(255, 237, 193, 245),
-                      ),
-                    ],
-                  ),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        height: 110,
-                        width: 110,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                        child: ClipRRect(borderRadius: BorderRadius.circular(15),child:  Image.asset('assets/news_image.jpg',fit: BoxFit.cover,)),
-                      ),
-                      const SizedBox(width: 20,),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            SizedBox(
-                              child: ReadMoreText(
-                                          'Triumphs and Thrills on Day Two of the Karate 1 Youth League in Venice',
-                                          style: GoogleFonts.inter(
-                                          fontSize: 14, 
-                                          fontWeight: FontWeight.w500,
-                                          color: Colors.black,
-                                          ),
-                                          trimLines: 2,
-                                          colorClickableText: Colors.blue,
-                                          trimExpandedText: '...Read Less',
-                                          trimCollapsedText: '...Read More',
-                                          trimMode: TrimMode.Line,
-                                      ),
-                            ),
-                        
-                            Container(
-                              padding:const EdgeInsets.only(top: 3,bottom: 5),
-                              child: Text(
-                                'Loream Ipsum, dummy data ',
-                                style: GoogleFonts.poppins(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w300,
-                                ),
-                              ),
-                            ),
-                            
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-              ),
-            );
-        },
-         
+      body: RefreshIndicator(
+        onRefresh: () async {},
+        child: ListView.builder(
+          padding: const EdgeInsets.all(8),
+          itemCount: articles.length,
+          itemBuilder: (context, index) {
+            final article = articles[index];
+            return NewsCard(article: article);
+          },
+        ),
       ),
-        
-      
-     
+    );
+  }
+}
+
+class NewsCard extends StatelessWidget {
+  final Map<String, dynamic> article;
+
+  const NewsCard({super.key, required this.article});
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      margin: const EdgeInsets.symmetric(vertical: 8),
+      child: InkWell(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => NewsDetailScreen(article: article),
+            ),
+          );
+        },
+        child: Padding(
+          padding: const EdgeInsets.all(12),
+          child: Row(
+            children: [
+              // Circular Image
+              Container(
+                width: 60,
+                height: 60,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  image: DecorationImage(
+                    fit: BoxFit.cover,
+                    image: article['urlToImage'] != null
+                        ? NetworkImage(article['urlToImage'])
+                        : const AssetImage('assets/placeholder.png')
+                            as ImageProvider,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 16),
+              // Title and Author
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      article['title'] ?? '',
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      article['author'] ?? 'Unknown Author',
+                      style: TextStyle(
+                        color: Colors.grey[600],
+                        fontSize: 14,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class NewsDetailScreen extends StatelessWidget {
+  final Map<String, dynamic> article;
+
+  const NewsDetailScreen({super.key, required this.article});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('News Detail'),
+        elevation: 0,
+      ),
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (article['urlToImage'] != null)
+              Image.network(
+                article['urlToImage'],
+                width: double.infinity,
+                height: 200,
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) {
+                  return Container(
+                    width: double.infinity,
+                    height: 200,
+                    color: Colors.grey[300],
+                    child: const Icon(Icons.error),
+                  );
+                },
+              ),
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    article['title'] ?? '',
+                    style: const TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Row(
+                    children: [
+                      const Icon(Icons.person, size: 16, color: Colors.grey),
+                      const SizedBox(width: 4),
+                      Text(
+                        article['author'] ?? 'Unknown Author',
+                        style: const TextStyle(color: Colors.grey),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    article['description'] ?? '',
+                    style: const TextStyle(fontSize: 16, height: 1.5),
+                  ),
+                  if (article['content'] != null) ...[
+                    const SizedBox(height: 16),
+                    Text(
+                      article['content'],
+                      style: const TextStyle(fontSize: 16, height: 1.5),
+                    ),
+                  ],
+                  const SizedBox(height: 16),
+                  Text(
+                    'Source: ${article['source']['name'] ?? "Unknown Source"}',
+                    style: TextStyle(
+                      color: Colors.grey[600],
+                      fontStyle: FontStyle.italic,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

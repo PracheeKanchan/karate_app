@@ -1,90 +1,163 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
+class TrainingProgressTracker extends StatelessWidget {
+  final int totalDays = 56;
+  final int completedDays;
+  final int totalWeeks = 8;
 
-class VerticalStepperWithHorizontalStepper extends StatefulWidget {
-  const VerticalStepperWithHorizontalStepper({super.key});
-
-  @override
-  _VerticalStepperWithHorizontalStepperState createState() =>
-      _VerticalStepperWithHorizontalStepperState();
-}
-
-class _VerticalStepperWithHorizontalStepperState
-    extends State<VerticalStepperWithHorizontalStepper> {
-  int _currentWeek = 0;
-  int _currentDay = 0;
-
-  // Define a method for creating steps for each week.
-  List<Step> _getWeekSteps() {
-    return [
-      Step(
-        title: const Row(
-          children: [
-            Icon(Icons.calendar_today),
-            SizedBox(width: 10),
-            Text('Week 1'),
-          ],
-        ),
-        content: const Text("Week 1"),
-        isActive: _currentWeek == 0,
-        state: _currentWeek > 0 ? StepState.complete : StepState.indexed,
-      ),
-      // You can add more weeks in the same way, e.g., Week 2, Week 3...
-      Step(
-        title: const Row(
-          children: [
-            Icon(Icons.calendar_today),
-            SizedBox(width: 10),
-            Text('Week 2'),
-          ],
-        ),
-        content: Container(
-          height: 100,
-          color: Colors.grey[300],
-          child: const Center(child: Text('No content for Week 2')),
-        ),
-        isActive: _currentWeek >= 1,
-        state: _currentWeek > 1 ? StepState.complete : StepState.indexed,
-      ),
-      // Repeat the above pattern for other weeks.
-    ];
-  }
+  const TrainingProgressTracker({
+    super.key,
+    required this.completedDays,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Courses'),
+        title: Text(
+          'Daily Progress',
+          style: GoogleFonts.poppins(
+            fontSize: 20,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Stepper(
-          type: StepperType.vertical,
-          steps: _getWeekSteps(),
-          currentStep: _currentWeek,
-          onStepTapped: (step) => setState(() {
-            _currentWeek = step;
-            _currentDay = 0; // Reset day when switching weeks
-          }),
-          onStepContinue: () {
-            if (_currentWeek < 1) {
-              setState(() {
-                _currentWeek++;
-                _currentDay = 0; // Reset day when switching weeks
-              });
-            }
-          },
-          onStepCancel: () {
-            if (_currentWeek > 0) {
-              setState(() {
-                _currentWeek--;
-                _currentDay = 0; // Reset day when switching weeks
-              });
-            }
-          },
+      body: Container(
+        color: Colors.white,
+        child: Column(
+          children: [
+            // Display remaining days
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Row(
+                children: [
+                  Text(
+                    '${totalDays - completedDays} Days left',
+                    style: TextStyle(
+                      color: Colors.grey[800],
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            // List of weeks progress
+            Expanded(
+              child: ListView.builder(
+                padding: const EdgeInsets.symmetric(vertical: 8),
+                itemCount: totalWeeks,
+                itemBuilder: (context, weekIndex) {
+                  return WeekProgress(
+                    weekNumber: weekIndex + 1,
+                    isCompleted: completedDays >= (weekIndex + 1) * 7,
+                    currentDay: completedDays,
+                  );
+                },
+              ),
+            ),
+            // GO Button
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: ElevatedButton(
+                onPressed: () {},
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blue,
+                  minimumSize: const Size(double.infinity, 45),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(25),
+                  ),
+                ),
+                child: const Text(
+                  'GO!',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
   }
 }
 
+class WeekProgress extends StatelessWidget {
+  final int weekNumber;
+  final bool isCompleted;
+  final int currentDay;
+
+  const WeekProgress({
+    super.key,
+    required this.weekNumber,
+    required this.isCompleted,
+    required this.currentDay,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      color: Colors.white,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(left: 8, bottom: 8),
+            child: Text(
+              'Week $weekNumber',
+              style: TextStyle(
+                color: Colors.grey[800],
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+          // Week progress bar
+          WeekProgressBar(
+            weekNumber: weekNumber,
+            isCompleted: isCompleted,
+            currentDay: currentDay,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class WeekProgressBar extends StatelessWidget {
+  final int weekNumber;
+  final bool isCompleted;
+  final int currentDay;
+
+  const WeekProgressBar({
+    super.key,
+    required this.weekNumber,
+    required this.isCompleted,
+    required this.currentDay,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final int startDayOfWeek = (weekNumber - 1) * 7 + 1;
+
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: List.generate(7, (index) {
+        final dayNumber = startDayOfWeek + index;
+        bool isDayCompleted = currentDay >= dayNumber;
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 4),
+          child: Icon(
+            isDayCompleted ? Icons.check_circle : Icons.radio_button_unchecked,
+            color: isDayCompleted ? Colors.green : Colors.grey,
+          ),
+        );
+      }),
+    );
+  }
+}

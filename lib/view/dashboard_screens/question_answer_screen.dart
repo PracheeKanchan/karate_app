@@ -1,9 +1,23 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:karate_app/view/tab_bar/home_screen.dart';
 import 'package:readmore/readmore.dart';
+import 'package:sqflite/sqflite.dart';
 
+class QuestionAnwserModel{
 
+  String imageUrl;
+  String question;
+  String answer;
+
+  QuestionAnwserModel({
+      required this.imageUrl,
+      required this.question,  
+      required this.answer, 
+      ///required this.email,  
+  });
+}
 
 class QuestionAnswerScreen extends StatefulWidget {
 
@@ -49,12 +63,31 @@ void _showBottomSheet(BuildContext context, String question, String answer) {
     );
   }
 
+  List<QuestionAnwserModel> questionAnwerList=[];
 
+  @override
+  void initState(){
+    super.initState();
+    getFirebaseData();
+  }
+void getFirebaseData()async{
+  QuerySnapshot response=await FirebaseFirestore.instance.collection("questionAnswers").get();
+
+  for(int i=0;i<response.docs.length;i++){
+    questionAnwerList.add(
+      QuestionAnwserModel(
+        imageUrl: response.docs[i]['imageUrl'], 
+        question: response.docs[i]['question'], 
+        answer: response.docs[i]['answer'],
+      )
+    );
+  }
+  print(questionAnwerList);
+  setState(() {});
+}
   @override
   Widget build(BuildContext context) {
 
-    String question = "What is the first move you learn as a beginner?";
-    String answer = "Kihon - Kihon means basic, so the Kihon kata consists of basic blocks and attacks.";
 
     return Scaffold(
       appBar:  AppBar(
@@ -82,31 +115,20 @@ void _showBottomSheet(BuildContext context, String question, String answer) {
                 icon: const Icon(Icons.navigate_before_outlined,color: Colors.white,)),
               ),
              
-            //  Positioned(
-            //   left: 70,
-            //   top: 35,
-            //   child: Text(
-            //     'Question & Answer',
-            //     style: GoogleFonts.poppins(
-            //         fontSize: 20,
-            //         fontWeight: FontWeight.w600,
-            //         color:Colors.white
-            //     )
-            //   ),
-            // ),
+            
           ],
         ),
         automaticallyImplyLeading: false,  // Prevents default back button
       ),
       body: ListView.builder(
-        itemCount: 10,
+        itemCount: questionAnwerList.length,
         shrinkWrap: true,
         itemBuilder: (context, index) {
           return Padding(
               padding: const EdgeInsets.only(left: 15,right: 15,top: 15),
               child: GestureDetector(
                 onTap: (){
-                  _showBottomSheet(context, question, answer);
+                  _showBottomSheet(context, questionAnwerList[index].question,questionAnwerList[index].answer);
                 },
                 child: Container(
                     //height: 100,
@@ -133,7 +155,9 @@ void _showBottomSheet(BuildContext context, String question, String answer) {
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(15),
                           ),
-                          child: ClipRRect(borderRadius: BorderRadius.circular(15),child:  Image.asset('assets/knowledge_lab/Q&A_image.jpg',fit: BoxFit.cover,)),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(15),
+                            child:  Image.network(questionAnwerList[index].imageUrl,fit: BoxFit.cover,)),
                         ),
                         const SizedBox(width: 20,),
                         Expanded(
@@ -141,32 +165,29 @@ void _showBottomSheet(BuildContext context, String question, String answer) {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               SizedBox(
-                                child: ReadMoreText(
-                                            question,
+                                child: Text(
+                                            questionAnwerList[index].question,
                                             style: GoogleFonts.inter(
                                             fontSize: 14, 
                                             fontWeight: FontWeight.w600,
                                             color: Colors.black,
                                             ),
-                                            trimLines: 2,
-                                            colorClickableText: Colors.blue,
-                                            
-                                            trimMode: TrimMode.Line,
+                                            maxLines: 3,
+                                            overflow:TextOverflow.ellipsis,
                                         ),
                               ),
                           
                               Container(
                                 padding:const EdgeInsets.only(top: 3,bottom: 5),
-                                child: ReadMoreText(
-                                            answer,
+                                child: Text(
+                                            questionAnwerList[index].answer,
                                             style: GoogleFonts.inter(
                                             fontSize: 12, 
                                             fontWeight: FontWeight.w400,
                                             color: Colors.black,
                                             ),
-                                            trimLines: 2,
-                                            colorClickableText: Colors.blue,
-                                            trimMode: TrimMode.Line,
+                                            maxLines: 2,
+                                            overflow: TextOverflow.ellipsis,
                                         ),
                               ),
                               
