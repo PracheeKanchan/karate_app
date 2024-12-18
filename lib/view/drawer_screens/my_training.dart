@@ -63,7 +63,6 @@ class MyTrainingScreen extends StatefulWidget {
 }
 
 class _MyTrainingScreen extends State<MyTrainingScreen> {
-  
   List<Map<String, dynamic>> trainingList = [];
   final DBHelper _dbHelper = DBHelper(); // Instantiate DBHelper
 
@@ -79,13 +78,25 @@ class _MyTrainingScreen extends State<MyTrainingScreen> {
     });
   }
 
-  // Show dialog to add new training
-  void _showAddTrainingDialog() {
+  // Show dialog to add or edit training
+  void _showAddTrainingDialog({Map<String, dynamic>? training}) {
+    if (training != null) {
+      // Prefill data for edit
+      titleController.text = training['title'];
+      descriptionController.text = training['description'];
+      trainingDaysController.text = training['days'].toString();
+    } else {
+      // Clear fields for adding new training
+      titleController.clear();
+      descriptionController.clear();
+      trainingDaysController.clear();
+    }
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text("Add Training"),
+          title: Text(training != null ? "Edit Training" : "Add Training"),
           content: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -127,15 +138,24 @@ class _MyTrainingScreen extends State<MyTrainingScreen> {
             ),
             TextButton(
               onPressed: () async {
-                // Add training to the database
+                // Add or update training to the database
                 if (titleController.text.isNotEmpty &&
                     descriptionController.text.isNotEmpty &&
                     trainingDaysController.text.isNotEmpty) {
-                  await _dbHelper.insertTraining({
+                  Map<String, dynamic> newTraining = {
                     'title': titleController.text,
                     'description': descriptionController.text,
                     'days': int.tryParse(trainingDaysController.text) ?? 0,
-                  });
+                  };
+
+                  if (training != null) {
+                    // Update existing training
+                    newTraining['id'] = training['id']; // Retain the existing ID for update
+                    await _dbHelper.insertTraining(newTraining);
+                  } else {
+                    // Insert new training
+                    await _dbHelper.insertTraining(newTraining);
+                  }
 
                   // Clear controllers and reload data
                   titleController.clear();
@@ -145,7 +165,7 @@ class _MyTrainingScreen extends State<MyTrainingScreen> {
                   _loadTrainings(); // Reload the list
                 }
               },
-              child: const Text('OK'),
+              child: Text(training != null ? 'Update' : 'Add'),
             ),
           ],
         );
@@ -265,7 +285,7 @@ class _MyTrainingScreen extends State<MyTrainingScreen> {
                           IconButton(
                             icon: const Icon(Icons.edit_outlined, size: 20),
                             onPressed: () {
-                              // Handle edit functionality here
+                              _showAddTrainingDialog(training: training); // Pass training to edit
                             },
                           ),
                           IconButton(
@@ -285,12 +305,10 @@ class _MyTrainingScreen extends State<MyTrainingScreen> {
         },
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _showAddTrainingDialog,
+        onPressed: () => _showAddTrainingDialog(), // Open the dialog for adding new training
         tooltip: 'Add Training',
         child: const Icon(Icons.add),
       ),
     );
   }
 }
-
-

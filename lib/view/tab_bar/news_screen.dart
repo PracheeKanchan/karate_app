@@ -24,7 +24,7 @@ class _NewsHomePageState extends State<NewsHomePage> {
     try {
       final response = await http.get(
         Uri.parse(
-            'https://saurav.tech/NewsAPI/top-headlines/category/health/in.json'),
+            'https://mocki.io/v1/791123ea-dbeb-4e9f-b7c0-ac2503845103'),
       );
 
       if (response.statusCode == 200) {
@@ -72,7 +72,7 @@ class _NewsHomePageState extends State<NewsHomePage> {
       );
     }
 
-    return NewsListScreen(articles: articles!);
+    return NewsListScreen(articles: articles);
   }
 }
 
@@ -180,27 +180,22 @@ class NewsDetailScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('News Detail'),
+        title: const Text('Detail News'),
         elevation: 0,
+        surfaceTintColor: Colors.white,
       ),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            if (article['urlToImage'] != null)
-              Image.network(
-                article['urlToImage'],
-                width: double.infinity,
-                height: 200,
-                fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) {
-                  return Container(
-                    width: double.infinity,
-                    height: 200,
-                    color: Colors.grey[300],
-                    child: const Icon(Icons.error),
-                  );
-                },
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Container(
+                  height: 200,
+                  width: double.infinity,
+                  color: Colors.white,
+                  child: Image.network(article['urlToImage'],fit: BoxFit.cover,),
+                ),
               ),
             Padding(
               padding: const EdgeInsets.all(16),
@@ -230,13 +225,11 @@ class NewsDetailScreen extends StatelessWidget {
                     article['description'] ?? '',
                     style: const TextStyle(fontSize: 16, height: 1.5),
                   ),
-                  if (article['content'] != null) ...[
-                    const SizedBox(height: 16),
-                    Text(
+                  Text(
                       article['content'],
                       style: const TextStyle(fontSize: 16, height: 1.5),
-                    ),
-                  ],
+                  ),
+                  
                   const SizedBox(height: 16),
                   Text(
                     'Source: ${article['source']['name'] ?? "Unknown Source"}',

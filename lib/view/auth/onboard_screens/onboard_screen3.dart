@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:karate_app/view/auth/welcome_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class OnboardScreen3 extends StatefulWidget{
 
@@ -79,7 +80,11 @@ class _OnboardScreen3State extends State<OnboardScreen3>{
           bottom: 40,
           right: 10,
           child: GestureDetector(
-            onTap: () {
+            
+            onTap: () async{
+              // Set 'isFirstTime' to false after onboarding
+            SharedPreferences prefs = await SharedPreferences.getInstance();
+            prefs.setBool('isFirstTime', false);
               Navigator.pushReplacement(context, 
                 MaterialPageRoute(builder: (context){
                   return const WelcomeScreen();

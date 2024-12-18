@@ -3,12 +3,15 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:karate_app/drawer.dart';
+import 'package:karate_app/view/auth/login_screen.dart';
+import 'package:karate_app/view/custom_snackbar.dart';
 import 'package:karate_app/view/dashboard_screens/begineer_level.dart';
 import 'package:karate_app/view/dashboard_screens/book_screen.dart';
 import 'package:karate_app/view/dashboard_screens/question_answer_screen.dart';
 import 'package:karate_app/view/dashboard_screens/stance_screen.dart';
 import 'package:karate_app/view/dashboard_screens/warm_up_screen.dart';
 import 'package:karate_app/view/dashboard_screens/white_belt_tracker.dart';
+import 'package:karate_app/view/session_data.dart';
 import 'package:karate_app/view/tab_bar/news_screen.dart';
 import 'package:karate_app/view/tab_bar/profile_screen.dart';
 
@@ -42,7 +45,6 @@ int _selectedIndex = 0;
 
       return Scaffold(
           appBar:AppBar(
-            toolbarHeight: 100,
             title: Text(
               'Hello, Prachee',
               style: GoogleFonts.poppins(
@@ -51,6 +53,24 @@ int _selectedIndex = 0;
               ),
             ),
             surfaceTintColor: Colors.white,
+            actions: [
+              Row(
+                children: [
+                  GestureDetector(
+                    onTap: () async{
+                      await SessionData.clearSessionData();
+                      CustomSnackbar.showCustomSnackbar(message: "Log out sucessfully", context: context);
+                      Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(builder: (context){
+                          return const LoginScreen();
+                        })
+                      );
+                    },
+                    child: const Icon(Icons.logout)),
+                  const SizedBox(width: 20,),
+                ],
+              ),
+            ],
           ),
           drawer: const MyDrawer(),
           body: _screens[_selectedIndex], // Display the selected screen
@@ -136,6 +156,7 @@ class _HomeTabScreenState extends State<HomeTabScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  const SizedBox(height: 20,),
                   Container(
                     width: MediaQuery.of(context).size.width,
                     height: 200,

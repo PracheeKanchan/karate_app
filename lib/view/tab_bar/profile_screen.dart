@@ -1,4 +1,3 @@
-// lib/pages/profile_page.dart
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
@@ -15,28 +14,25 @@ class _ProfilePageState extends State<ProfilePage> {
   String? _imageUrl;
   File? _imageFile;
 
-  Map<String, String> userProfile = {
-    'username': 'John Doe',
-    'email': 'johndoe@example.com',
-    'mobile': '+91 9876543210',
-    'dob': '01/01/2000',
-    'address': '123 Main Street, City',
-    
+  // Initialize controllers for user profile fields
+  final Map<String, TextEditingController> controllers = {
+    'username': TextEditingController(),
+    'email': TextEditingController(),
+    'mobile': TextEditingController(),
+    'dob': TextEditingController(),
+    'address': TextEditingController(),
   };
-
-  final Map<String, TextEditingController> controllers = {};
 
   @override
   void initState() {
     super.initState();
+    // Set default image URL or you could use a local path
     _imageUrl = 'https://xsgames.co/randomusers/avatar.php?g=male';
-    userProfile.forEach((key, value) {
-      controllers[key] = TextEditingController(text: value);
-    });
   }
 
   @override
   void dispose() {
+    // Dispose controllers to avoid memory leaks
     controllers.forEach((key, controller) {
       controller.dispose();
     });
@@ -82,14 +78,12 @@ class _ProfilePageState extends State<ProfilePage> {
                   TextButton(
                     onPressed: () {
                       setState(() {
-                        controllers.forEach((key, controller) {
-                          userProfile[key] = controller.text;
-                        });
+                        // Save entered data
+                        // You can save to a database or any other method
                       });
                       Navigator.pop(context);
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                            content: Text('Profile Updated Successfully')),
+                        const SnackBar(content: Text('Profile Updated Successfully')),
                       );
                     },
                     child: const Text(
@@ -162,7 +156,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           );
                           controllers['dob']!.text =
                               "${date!.day.toString().padLeft(2, '0')}/${date.month.toString().padLeft(2, '0')}/${date.year}";
-                                                },
+                        },
                       ),
                       _buildDialogField(
                         controller: controllers['address']!,
@@ -170,7 +164,6 @@ class _ProfilePageState extends State<ProfilePage> {
                         icon: Icons.location_on,
                         maxLines: 3,
                       ),
-                      
                     ],
                   ),
                 ),
@@ -258,33 +251,33 @@ class _ProfilePageState extends State<ProfilePage> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Column(
-                children: userProfile.entries.map((entry) {
-                  IconData icon;
-                  switch (entry.key) {
-                    case 'username':
-                      icon = Icons.person;
-                      break;
-                    case 'email':
-                      icon = Icons.email;
-                      break;
-                    case 'mobile':
-                      icon = Icons.phone;
-                      break;
-                    case 'dob':
-                      icon = Icons.calendar_today;
-                      break;
-                    case 'address':
-                      icon = Icons.location_on;
-                      break;
-                    default:
-                      icon = Icons.info;
-                  }
-                  return _buildProfileField(
-                    icon: icon,
-                    label: entry.key.replaceAll('_', ' ').toUpperCase(),
-                    value: entry.value,
-                  );
-                }).toList(),
+                children: [
+                  _buildProfileField(
+                    icon: Icons.person,
+                    label: 'Username',
+                    value: controllers['username']!.text.isEmpty ? "" : controllers['username']!.text,
+                  ),
+                  _buildProfileField(
+                    icon: Icons.email,
+                    label: 'Email',
+                    value: controllers['email']!.text.isEmpty ? "" : controllers['email']!.text,
+                  ),
+                  _buildProfileField(
+                    icon: Icons.phone,
+                    label: 'Mobile Number',
+                    value: controllers['mobile']!.text.isEmpty ? "" : controllers['mobile']!.text,
+                  ),
+                  _buildProfileField(
+                    icon: Icons.calendar_today,
+                    label: 'Date of Birth',
+                    value: controllers['dob']!.text.isEmpty ? "": controllers['dob']!.text,
+                  ),
+                  _buildProfileField(
+                    icon: Icons.location_on,
+                    label: 'Address',
+                    value: controllers['address']!.text.isEmpty ? "" : controllers['address']!.text,
+                  ),
+                ],
               ),
             ),
           ],

@@ -1,7 +1,20 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:readmore/readmore.dart';
 
+class WarmUpModel{
+
+  String imageUrl;
+  String title;
+  String description;
+
+  WarmUpModel({
+      required this.imageUrl,
+      required this.title,  
+      required this.description, 
+  });
+}
 
 
 class WarmUpScreen extends StatefulWidget {
@@ -13,7 +26,27 @@ class WarmUpScreen extends StatefulWidget {
 
 class _WarmUpScreenScreenState extends State<WarmUpScreen> {
   
-  
+  List<WarmUpModel> warmUpList=[];
+
+  @override
+  void initState(){
+    super.initState();
+    getFirebaseData();
+  }
+void getFirebaseData()async{
+  QuerySnapshot response=await FirebaseFirestore.instance.collection("WarmUpCollection").get();
+
+  for(int i=0;i<response.docs.length;i++){
+    warmUpList.add(
+      WarmUpModel(
+        imageUrl: response.docs[i]['imageUrl'], 
+        title: response.docs[i]['title'], 
+        description: response.docs[i]['description'],
+      )
+    );
+  }
+  setState(() {});
+}
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -43,7 +76,7 @@ class _WarmUpScreenScreenState extends State<WarmUpScreen> {
         automaticallyImplyLeading: false,  // Prevents default back button
       ),
       body: ListView.builder(
-        itemCount: 10,
+        itemCount: warmUpList.length,
         shrinkWrap: true,
         itemBuilder: (context, index) {
           return Padding(
@@ -66,7 +99,7 @@ class _WarmUpScreenScreenState extends State<WarmUpScreen> {
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(15),
                         ),
-                        child: ClipRRect(borderRadius: BorderRadius.circular(15),child:  Image.asset('assets/warm_up_screen/arm_stretch.jpg',fit: BoxFit.fill,)),
+                        child: ClipRRect(borderRadius: BorderRadius.circular(15),child:  Image.network(warmUpList[index].imageUrl,fit: BoxFit.fill,)),
                       ),
                       const SizedBox(width: 10,),
                       Expanded(
@@ -75,7 +108,7 @@ class _WarmUpScreenScreenState extends State<WarmUpScreen> {
                           children: [
                             SizedBox(
                               child: ReadMoreText(
-                                          'Arm Stretch',
+                                          warmUpList[index].title,
                                           style: GoogleFonts.inter(
                                           fontSize: 14, 
                                           fontWeight: FontWeight.w500,
@@ -92,7 +125,7 @@ class _WarmUpScreenScreenState extends State<WarmUpScreen> {
                             Container(
                               padding:const EdgeInsets.only(top: 3,bottom: 5),
                               child: ReadMoreText(
-                                'Start by standing with your feet shoulder-width apart and your arms extended out in front of you.',
+                                warmUpList[index].description,
                                 style: GoogleFonts.inter(
                                           fontSize: 12, 
                                           fontWeight: FontWeight.w300,

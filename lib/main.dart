@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:karate_app/view/auth/splash_screen.dart';
+import 'package:karate_app/view/session_data.dart';
 
 void main() async{
    WidgetsFlutterBinding.ensureInitialized();
@@ -13,7 +14,9 @@ void main() async{
        projectId: "karate-app-537b3"
      )
   );
-  runApp(const MyApp());
+    await SessionData.getSessionData(); // Fetch the login state
+
+  runApp( const MyApp());
 
   List<Map<String,dynamic>> questionAnwerList=[
 
@@ -78,9 +81,44 @@ void main() async{
     // for(var element in stanceList){
     //     await FirebaseFirestore.instance.collection('stanceCollection').add(element);
     // }
+
+    List<Map<String,dynamic>> warmUpList=[
+
+	{
+	   'imageUrl': 'https://img.freepik.com/premium-photo/beach-portrait-exercise-happy-man-stretching-arm-outdoor-freedom-sports-workout-start-routine-blue-sky-natural-sea-water-indian-person-doing-relax-training-warm-up-nature-island_590464-219404.jpg',
+	   'title': 'Arm Stretch',
+	   'description':'Start by standing with your feet shoulder-width apart and your arms extended out in front of you.',
+	},
+	{
+	   'imageUrl': 'https://hyperwear.com/cdn/shop/articles/weighted-jump-rope-benefits-why-you-should-add-it-to-your-workout-759655.jpg?v=1706024276&width=1024',
+	   'title': 'Jump Rope',
+	   'description':'Jump rope, also known as skipping, is a cardiovascular exercise that involves jumping over a rope as it swings beneath you',
+	},
+	{
+	   'imageUrl': 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQYEmxChSEJ9o0Lcnw9BTsuvbYvzEEUOk8pYw&s',
+	   'title': 'Push Ups',
+	   'description':'Push-ups are a bodyweight exercise that primarily target the chest, shoulders, and triceps. They involve lowering and raising the body while keeping the arms, back, and legs straight.',
+	},
+	{
+	   'imageUrl': 'https://images.pexels.com/photos/16131142/pexels-photo-16131142.jpeg?cs=srgb&dl=pexels-lngdik23-16131142.jpg&fm=jpg',
+	   'title': 'Leg Stretching',
+	   'description':'Leg stretching involves a series of exercises designed to improve flexibility, mobility, and muscle elasticity in the legs.',
+	},
+	{
+	   'imageUrl': 'https://st.depositphotos.com/2069237/4425/i/450/depositphotos_44256833-stock-photo-sit-ups-fitness-man-training.jpg',
+	   'title': 'Sit Ups',
+	   'description':'Sit-ups are a core exercise that target the abdominal muscles, helping to strengthen and tone the stomach area by lifting the upper body from a lying position.',
+	},
+];
+
+    for(var element in warmUpList){
+      await FirebaseFirestore.instance.collection('WarmUpCollection').add(element);
+    }
 }
 class MyApp extends StatelessWidget{
-  const MyApp({super.key});
+
+
+  const MyApp({super.key,});
 
   @override
   Widget build(BuildContext context){

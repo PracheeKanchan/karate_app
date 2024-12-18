@@ -48,7 +48,7 @@ class MyDrawer extends StatelessWidget{
                           topRight: Radius.circular(20),
                           bottomRight: Radius.circular(20)
                   ),
-                  color: Color.fromRGBO(14,161,125,0.15),
+                  //color: Color.fromRGBO(14,161,125,0.15),
                 ),
                 child: ListTile(
                   minVerticalPadding: 10,

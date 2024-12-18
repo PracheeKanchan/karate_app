@@ -1,6 +1,22 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:karate_app/view/auth/login_screen.dart';
+import 'package:karate_app/view/custom_snackbar.dart';
+
+class RegisterModelClass{
+
+  String name;
+  String mailId;
+  String password;
+
+  RegisterModelClass({
+    required this.name,
+    required this.mailId,
+    required this.password,
+  });
+}
 
 class RegisterScreen extends StatefulWidget{
 
@@ -14,7 +30,12 @@ class _RegisterScreenState extends State<RegisterScreen>{
 TextEditingController userNnameController=TextEditingController();
 TextEditingController emailController=TextEditingController();
 TextEditingController passwordController=TextEditingController();
-TextEditingController confirmPasswordController=TextEditingController();
+
+List<RegisterModelClass> registerUserList=[];
+
+ bool _showPassword = false;
+
+final FirebaseAuth _firebaseAuth=FirebaseAuth.instance;
 
   @override
   Widget build(BuildContext context){
@@ -49,6 +70,7 @@ TextEditingController confirmPasswordController=TextEditingController();
                   decoration: const InputDecoration(
                     hintText: 'Enter username',
                     border: OutlineInputBorder(),
+                    prefixIcon:Icon(Icons.person,),
                   ),
                   
                 ),
@@ -61,6 +83,7 @@ TextEditingController confirmPasswordController=TextEditingController();
                   decoration: const InputDecoration(
                     hintText: 'Email',
                     border: OutlineInputBorder(),
+                    prefixIcon:Icon(Icons.email,),
                   ),
                   
                 ),
@@ -70,21 +93,20 @@ TextEditingController confirmPasswordController=TextEditingController();
                 padding: const EdgeInsets.symmetric(horizontal: 30),
                 child: TextField(
                   controller: passwordController,
-                  decoration: const InputDecoration(
+                  obscureText: _showPassword,
+                  decoration: InputDecoration(
                     hintText: 'Password',
-                    border: OutlineInputBorder(),
-                  ),
-                  
-                ),
-              ),
-              const SizedBox(height: 30,),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 30),
-                child: TextField(
-                  controller: confirmPasswordController,
-                  decoration: const InputDecoration(
-                    hintText: 'Confirm Password',
-                    border: OutlineInputBorder(),
+                    border: const OutlineInputBorder(),
+                    suffixIcon: GestureDetector(
+                                  onTap: () {
+                                      _showPassword = !_showPassword;
+                                      setState(() {});
+                                  },
+                                  child: Icon(
+                                      (_showPassword) ? Icons.visibility_off :
+                                      Icons.visibility,
+                                  ),
+                              ),
                   ),
                   
                 ),
@@ -94,12 +116,49 @@ TextEditingController confirmPasswordController=TextEditingController();
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 30),
                 child: GestureDetector(
-                  onTap: (){
-                    Navigator.pushReplacement(context,
-                    MaterialPageRoute(builder: (context){
-                      return const LoginScreen();
-                    })
-                  );
+                  onTap: ()async{
+                    if(userNnameController.text.trim().isNotEmpty && emailController.text.trim().isNotEmpty &&
+                            passwordController.text.trim().isNotEmpty  ){
+                
+                              try{
+                                  UserCredential userCredential= await _firebaseAuth.createUserWithEmailAndPassword(
+                                        email: emailController.text.trim(),
+                                        password: passwordController.text.trim(),
+                                    );
+                                   
+                                        Map<String,dynamic> data={
+                                          'UserName':userNnameController.text.trim(),
+                                          'UserEmail':emailController.text.trim(),
+                                          'UserPassword':passwordController.text.trim(),
+                                        };
+                      
+                                        //add data to firebase
+                                        FirebaseFirestore.instance.collection("RegisterUserInfo").add(data);
+                                        print(data);
+                
+                                        userNnameController.clear();
+                                        emailController.clear();
+                                        passwordController.clear();
+                
+                                    CustomSnackbar.showCustomSnackbar(message: "Register sucessfully", context: context);
+                                    //ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Data Added'), ), );
+                                    
+                                    Navigator.of(context).pop();
+                
+                              }on FirebaseAuthException  catch(error){
+                
+                                  CustomSnackbar.showCustomSnackbar(message: error.message!, context: context);
+                              }
+                
+                        }else{
+                            CustomSnackbar.showCustomSnackbar(message: "Please Enter valid data", context: context);
+                        }
+                
+                  //   Navigator.pushReplacement(context,
+                  //   MaterialPageRoute(builder: (context){
+                  //     return const LoginScreen();
+                  //   })
+                  // );
                   },
                   child: Container(
                     padding: const EdgeInsets.symmetric(vertical: 14),
