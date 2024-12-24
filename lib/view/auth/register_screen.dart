@@ -37,6 +37,7 @@ List<RegisterModelClass> registerUserList=[];
 
 final FirebaseAuth _firebaseAuth=FirebaseAuth.instance;
 
+
   @override
   Widget build(BuildContext context){
 
@@ -134,8 +135,9 @@ final FirebaseAuth _firebaseAuth=FirebaseAuth.instance;
                       
                                         //add data to firebase
                                         FirebaseFirestore.instance.collection("RegisterUserInfo").add(data);
-                                        print(data);
-                
+                                        //setState(() { });                                     
+
+                                        //clear Controllers
                                         userNnameController.clear();
                                         emailController.clear();
                                         passwordController.clear();

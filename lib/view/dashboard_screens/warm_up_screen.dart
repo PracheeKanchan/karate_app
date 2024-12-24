@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:readmore/readmore.dart';
 
 class WarmUpModel{
 
@@ -81,69 +80,70 @@ void getFirebaseData()async{
         itemBuilder: (context, index) {
           return Padding(
               padding: const EdgeInsets.only(left: 10,right: 10,top: 15),
-              child: Container(
-                  //height: 100,
-                  width: MediaQuery.of(context).size.width,
-                  padding: const EdgeInsets.symmetric(vertical: 10,horizontal: 10),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(15),
-                    color: Colors.white,
-                    
-                  ),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        height: 110,
-                        width: 150,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(15),
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context){
+                    return WarmUpDetailScreen(warmUpModel: warmUpList[index],);
+                  }));
+                },
+                child: Container(
+                    //height: 100,
+                    width: MediaQuery.of(context).size.width,
+                    padding: const EdgeInsets.symmetric(vertical: 10,horizontal: 10),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(15),
+                      color: Colors.white,
+                      
+                    ),
+                    child: Row(
+                      //crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          height: 110,
+                          width: 150,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          child: ClipRRect(borderRadius: BorderRadius.circular(15),child:  Image.network(warmUpList[index].imageUrl,fit: BoxFit.fill,)),
                         ),
-                        child: ClipRRect(borderRadius: BorderRadius.circular(15),child:  Image.network(warmUpList[index].imageUrl,fit: BoxFit.fill,)),
-                      ),
-                      const SizedBox(width: 10,),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            SizedBox(
-                              child: ReadMoreText(
-                                          warmUpList[index].title,
-                                          style: GoogleFonts.inter(
-                                          fontSize: 14, 
-                                          fontWeight: FontWeight.w500,
-                                          color: Colors.black,
-                                          ),
-                                          trimLines: 2,
-                                          colorClickableText: Colors.blue,
-                                          trimExpandedText: '...Read Less',
-                                          trimCollapsedText: '...Read More',
-                                          trimMode: TrimMode.Line,
-                                      ),
-                            ),
-                        
-                            Container(
-                              padding:const EdgeInsets.only(top: 3,bottom: 5),
-                              child: ReadMoreText(
-                                warmUpList[index].description,
-                                style: GoogleFonts.inter(
-                                          fontSize: 12, 
-                                          fontWeight: FontWeight.w300,
-                                          color: Colors.black,
-                                          ),
-                                          trimLines: 2,
-                                          colorClickableText: Colors.blue,
-                                          trimExpandedText: '...Read Less',
-                                          trimCollapsedText: '...Read More',
-                                          trimMode: TrimMode.Line,
+                        const SizedBox(width: 10,),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              SizedBox(
+                                child: Text(
+                                            warmUpList[index].title,
+                                            style: GoogleFonts.inter(
+                                            fontSize: 14, 
+                                            fontWeight: FontWeight.w500,
+                                            color: Colors.black,
+                                            ),
+                                            maxLines: 2,
+                                            overflow: TextOverflow.ellipsis,
+                                        ),
                               ),
-                            ),
-                            
-                          ],
+                          
+                              Container(
+                                padding:const EdgeInsets.only(top: 3,bottom: 5),
+                                child:Text(
+                                  warmUpList[index].description,
+                                  style: GoogleFonts.inter(
+                                            fontSize: 12, 
+                                            fontWeight: FontWeight.w300,
+                                            color: Colors.black,
+                                            ),
+                                            maxLines: 2,
+                                            overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                              
+                            ],
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
+                      ],
+                    ),
+                ),
               ),
             );
         },
@@ -155,3 +155,107 @@ void getFirebaseData()async{
     );
   }
 }
+
+class WarmUpDetailScreen extends StatelessWidget {
+
+  final WarmUpModel warmUpModel;
+  const WarmUpDetailScreen({super.key,required this.warmUpModel});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          warmUpModel.title,
+          style: GoogleFonts.poppins(
+            fontSize: 20,
+            fontWeight: FontWeight.w400,
+            color: Colors.white
+          ),
+        ),
+        leading:GestureDetector(
+          onTap: () {
+            Navigator.pop(context);
+          },
+          child: const Icon(
+            Icons.navigate_before_outlined,color: Colors.white,size: 30,)
+        ),
+        backgroundColor: const Color.fromARGB(255, 12, 54, 89),
+      ),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Image Section
+          Container(
+            color:  const Color.fromARGB(255, 12, 54, 89),
+            padding: const EdgeInsets.all(10),
+            width: double.infinity,
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Image.network(
+                    warmUpModel.imageUrl, // Replace with your image asset path
+                    fit: BoxFit.cover,
+                    width: 350,
+                    height: 250, // Ensures the image is properly fitted
+                  ),
+                ),
+                Text(
+                  warmUpModel.title,
+                  style: GoogleFonts.poppins(
+                    fontSize: 18,
+                    color: Colors.white,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 10,),
+          // Description Section
+          Padding(
+            padding: const EdgeInsets.all(5.0),
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(15),
+                color: Colors.white,
+                boxShadow: const[
+                  BoxShadow(
+                    color: Colors.grey,
+                    blurRadius: 15,
+                    offset: Offset(0,3)
+                  )
+                ]
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(15.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                       "Description",
+                      style: TextStyle(
+                        fontSize: 18,
+                        color: Colors.black,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    const SizedBox(height: 15,),
+                    Text(
+                      warmUpModel.description,
+                      style: const TextStyle(
+                        fontSize: 16,
+                        color: Colors.black,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+

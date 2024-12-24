@@ -78,7 +78,6 @@ class MyReminderScreen extends StatefulWidget {
 }
 
 class _MyReminderScreen extends State<MyReminderScreen> {
-  
   List<Map<String, dynamic>> reminderList = [];
 
   // Controller for TextField inputs in the dialog

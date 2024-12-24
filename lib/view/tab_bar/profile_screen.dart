@@ -1,3 +1,6 @@
+import 'dart:developer';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
@@ -10,9 +13,14 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+
   final ImagePicker _picker = ImagePicker();
+   // Firebase Firestore instance
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
+  
   String? _imageUrl;
   File? _imageFile;
+  List<Map<String,dynamic>> profileInfoList=[];
 
   // Initialize controllers for user profile fields
   final Map<String, TextEditingController> controllers = {
@@ -23,12 +31,56 @@ class _ProfilePageState extends State<ProfilePage> {
     'address': TextEditingController(),
   };
 
+// for(int i=0;i<profileInfoList.length;i++){
+//             if(SessionData.emailId == profileInfoList[i]['email']){
+//               controllers['username']!.text=profileInfoList[i]['username']?? '';
+//               controllers['email']!.text=profileInfoList[i]['email']?? '';
+//               controllers['mobile']!.text=profileInfoList[i]['mobile']?? '';
+//               controllers['dob']!.text=profileInfoList[i]['dob']?? '';
+//               controllers['address']!.text=profileInfoList[i]['address']?? '';
+//               _imageUrl=profileInfoList[i]['profile_image'] ?? _imageUrl;
+//             }
+//         }
   @override
   void initState() {
     super.initState();
     // Set default image URL or you could use a local path
     _imageUrl = 'https://xsgames.co/randomusers/avatar.php?g=male';
+    _fetchUserData(); // Fetch user data when the widget is initialized
+
   }
+
+// Fetch user data from Firestore
+   Future<void> _fetchUserData() async {
+    
+    try {
+      QuerySnapshot response = await firestore.collection("UsersProfile").get();
+      setState(() {
+        profileInfoList = response.docs.map((doc) {
+          return doc.data() as Map<String, dynamic>;
+        }).toList();
+        
+        // If profile data is available, populate the controllers
+        if (profileInfoList.isNotEmpty) {
+          for(int i=0;i<profileInfoList.length;i++){
+            var userData = profileInfoList[i]; // Assuming you're fetching only one profile
+            controllers['username']!.text = userData['username'] ?? '';
+            controllers['email']!.text = userData['email'] ?? '';
+            controllers['mobile']!.text = userData['mobile'] ?? '';
+            controllers['dob']!.text = userData['dob'] ?? '';
+            controllers['address']!.text = userData['address'] ?? '';
+            _imageUrl = userData['profile_image'] ?? _imageUrl; // Set profile image URL
+          }
+        }
+      });
+      log("$profileInfoList"); // Log the fetched data
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Failed to load profile data')),
+      );
+    }
+  }
+
 
   @override
   void dispose() {
@@ -44,12 +96,34 @@ class _ProfilePageState extends State<ProfilePage> {
       final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
       if (image != null) {
         setState(() {
+          
           _imageFile = File(image.path);
         });
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Failed to pick image')),
+      );
+    }
+  }
+
+// Save profile data to Firestore
+  Future<void> saveProfileData() async {
+    try {
+      await firestore.collection('UsersProfile').add({
+        'username': controllers['username']!.text,
+        'email': controllers['email']!.text,
+        'mobile': controllers['mobile']!.text,
+        'dob': controllers['dob']!.text,
+        'address': controllers['address']!.text,
+        'profile_image': _imageFile != null ? _imageFile!.path : null,
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Profile Updated Successfully')),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Failed to save profile data')),
       );
     }
   }
@@ -77,6 +151,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 actions: [
                   TextButton(
                     onPressed: () {
+                      saveProfileData();  // Save the data to Firestore
                       setState(() {
                         // Save entered data
                         // You can save to a database or any other method
@@ -105,7 +180,7 @@ class _ProfilePageState extends State<ProfilePage> {
                             radius: 50,
                             backgroundImage: _imageFile != null
                                 ? FileImage(_imageFile!)
-                                : NetworkImage(_imageUrl!) as ImageProvider,
+                                : NetworkImage(_imageUrl!) ,
                           ),
                           GestureDetector(
                             onTap: _pickImage,
@@ -225,7 +300,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     radius: 60,
                     backgroundImage: _imageFile != null
                         ? FileImage(_imageFile!)
-                        : NetworkImage(_imageUrl!) as ImageProvider,
+                        : NetworkImage(_imageUrl!),
                     backgroundColor: Colors.grey[300],
                   ),
                   Positioned(

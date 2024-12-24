@@ -1,6 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:karate_app/view/drawer_screens/meals_plan.dart';
 import 'package:karate_app/view/drawer_screens/my_training.dart';
 import 'package:karate_app/view/drawer_screens/reminder_screen.dart';
 
@@ -130,8 +131,11 @@ class MyDrawer extends StatelessWidget{
                      ),  
                   ),
                   onTap: () {
-                    
-                     // Close the drawer
+                    Navigator.of(context).pushReplacement(
+                      MaterialPageRoute(builder: (context){
+                        return  MealsPlanScreen();
+                      })
+                    );
                   },
                 ),
               ),

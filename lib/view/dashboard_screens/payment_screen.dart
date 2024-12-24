@@ -1,14 +1,53 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:karate_app/view/session_data.dart';
 import 'package:karate_app/view/tab_bar/home_screen.dart';
 
 
-class PaymentScreen extends StatelessWidget {
-  const PaymentScreen({super.key});
+class PaymentScreen extends StatefulWidget {
+  
+  final String courseName;
+  final int courseDuration;
+  final String imageUrl;
+  final String price;
+  
+  const PaymentScreen(
+    {
+      super.key,
+      required this.courseName,
+      required this.courseDuration,
+      required this.imageUrl,
+      required this.price,
+      
+  });
+
+  @override
+  State<PaymentScreen> createState() => _PaymentScreenState();
+}
+
+class _PaymentScreenState extends State<PaymentScreen> {
+Future<void> storeCourseDetails(String courseName, String imageUrl, String price, bool paymentSuccess,int courseDuration) async {
+    try {
+      await FirebaseFirestore.instance.collection('MyCoursesCollection').add({
+        'courseName': courseName,
+        'imageUrl': imageUrl,
+        'price': price,
+        'paymentSuccess': paymentSuccess,  // Store the payment success status
+        'courseDuration': courseDuration,
+      });
+    } catch (e) {
+      print('Error storing course details: $e');
+    }
+  }
 
   // Function to show the payment success dialog
-  void _showPaymentSuccessDialog(BuildContext context) {
+  void _showPaymentSuccessDialog(BuildContext context) async{
+
+    // Reset payment success status before processing a new payment
+    //await SessionData.resetPaymentSuccessToFalse();
+
     showDialog(
       context: context,
       builder: (context) {
@@ -42,6 +81,7 @@ class PaymentScreen extends StatelessWidget {
           actions: <Widget>[
             TextButton(
               onPressed: () {
+                
                 //close dialog box
                 Navigator.of(context).pop();
                 //close payment screen
@@ -134,6 +174,61 @@ class PaymentScreen extends StatelessWidget {
                       text: TextSpan(
                         children: [
                           TextSpan(
+                             text:  'Course Name : ',
+                              style: GoogleFonts.poppins(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.black,
+                              ),
+                            ),
+                            TextSpan(
+                             text:  widget.courseName,
+                              style: GoogleFonts.poppins(
+                                fontSize: 17,
+                                fontWeight: FontWeight.w400,
+                                color: Colors.blue[600],
+                              ),
+                            ),
+                          
+                        ]
+                      )
+                        
+                      ),
+                  ),
+                   Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: RichText(
+                      text: TextSpan(
+                        children: [
+                          TextSpan(
+                             text:  'Course Duration : ',
+                              style: GoogleFonts.poppins(
+                                fontSize: 17,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.black,
+                              ),
+                            ),
+                            TextSpan(
+                             text:  "${widget.courseDuration} days",
+                              style: GoogleFonts.poppins(
+                                fontSize: 17,
+                                fontWeight: FontWeight.w400,
+                                color: Colors.blue[600],
+                              ),
+                            ),
+                          
+                        ]
+                      )
+                        
+                      ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: RichText(
+                      text: TextSpan(
+                        children: [
+                          
+                          TextSpan(
                              text:  'Fees : ',
                               style: GoogleFonts.poppins(
                                 fontSize: 18,
@@ -142,7 +237,7 @@ class PaymentScreen extends StatelessWidget {
                               ),
                             ),
                             TextSpan(
-                             text:  ' ₹ 4000/-',
+                             text:  widget.price,
                               style: GoogleFonts.poppins(
                                 fontSize: 17,
                                 fontWeight: FontWeight.w400,
@@ -213,6 +308,11 @@ class PaymentScreen extends StatelessWidget {
             // Proceed Button
             GestureDetector(
               onTap: () {
+                // Store course details in Firebase with payment success flag set to true
+                storeCourseDetails(widget.courseName, widget.imageUrl, widget.price, true,widget.courseDuration);
+
+                // Store payment success in SharedPreferences
+                SessionData.setIsPurchased(true);
                 _showPaymentSuccessDialog(context);
               },
               child: Container(

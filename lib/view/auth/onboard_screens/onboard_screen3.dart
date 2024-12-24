@@ -83,13 +83,16 @@ class _OnboardScreen3State extends State<OnboardScreen3>{
             
             onTap: () async{
               // Set 'isFirstTime' to false after onboarding
-            SharedPreferences prefs = await SharedPreferences.getInstance();
-            prefs.setBool('isFirstTime', false);
+              SharedPreferences prefs = await SharedPreferences.getInstance();
+              prefs.setBool('isFirstTime', false);
               Navigator.pushReplacement(context, 
                 MaterialPageRoute(builder: (context){
                   return const WelcomeScreen();
                 })
               );
+              //setState(() async{ 
+                 
+              //});
             },
             child: Container(
               height: 50,

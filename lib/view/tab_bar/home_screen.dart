@@ -1,16 +1,17 @@
 import 'dart:async';
-
+import 'dart:developer';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:karate_app/drawer.dart';
 import 'package:karate_app/view/auth/login_screen.dart';
 import 'package:karate_app/view/custom_snackbar.dart';
-import 'package:karate_app/view/dashboard_screens/begineer_level.dart';
+import 'package:karate_app/view/dashboard_screens/courses_screen.dart';
 import 'package:karate_app/view/dashboard_screens/book_screen.dart';
 import 'package:karate_app/view/dashboard_screens/question_answer_screen.dart';
 import 'package:karate_app/view/dashboard_screens/stance_screen.dart';
 import 'package:karate_app/view/dashboard_screens/warm_up_screen.dart';
-import 'package:karate_app/view/dashboard_screens/white_belt_tracker.dart';
 import 'package:karate_app/view/session_data.dart';
 import 'package:karate_app/view/tab_bar/news_screen.dart';
 import 'package:karate_app/view/tab_bar/profile_screen.dart';
@@ -18,14 +19,23 @@ import 'package:karate_app/view/tab_bar/profile_screen.dart';
 class HomeScreen extends StatefulWidget{
 
   const HomeScreen({super.key});
-  
   @override
   State<HomeScreen> createState()=> _HomeScreenState();
 }
+
 class _HomeScreenState extends State<HomeScreen>{
 
 int _selectedIndex = 0;
+// String _username="";
 
+  @override
+  void initState() {
+    super.initState();
+    // _loadUsername();
+    //fetchCourses();
+  }
+
+  
   // Function to handle bottom navigation item selection
   void _onItemTapped(int index) {
     setState(() {
@@ -45,8 +55,12 @@ int _selectedIndex = 0;
 
       return Scaffold(
           appBar:AppBar(
-            title: Text(
-              'Hello, Prachee',
+            title:
+            //  _username == ""
+            // ? const CircularProgressIndicator()
+            // :
+            Text(
+              'Hello, ${SessionData.userName}',
               style: GoogleFonts.poppins(
                 fontSize: 20,
                 fontWeight: FontWeight.w500,
@@ -58,13 +72,15 @@ int _selectedIndex = 0;
                 children: [
                   GestureDetector(
                     onTap: () async{
-                      await SessionData.clearSessionData();
+                      // await SessionData.clearSessionData();
+                      SessionData.storeSessionData(loginData: false, userName: "");
                       CustomSnackbar.showCustomSnackbar(message: "Log out sucessfully", context: context);
                       Navigator.of(context).pushReplacement(
                         MaterialPageRoute(builder: (context){
                           return const LoginScreen();
                         })
                       );
+                      FirebaseAuth.instance.signOut();
                     },
                     child: const Icon(Icons.logout)),
                   const SizedBox(width: 20,),
@@ -109,6 +125,7 @@ class HomeTabScreen extends StatefulWidget {
 class _HomeTabScreenState extends State<HomeTabScreen> {
 
   int _currentIndex = 0;
+  int completedDays=15;
   late PageController _pageController;
 
   final List<String> _imageUrls = [
@@ -122,6 +139,7 @@ class _HomeTabScreenState extends State<HomeTabScreen> {
   @override
   void initState() {
     super.initState();
+    fetchCourses();
     _pageController = PageController();  // Initialize PageController
 
     // Automatically slide after some time (e.g., every 3 seconds)
@@ -146,7 +164,36 @@ class _HomeTabScreenState extends State<HomeTabScreen> {
     super.dispose();
   }
 
-  
+  // To hold courses data
+  List<Map<String, dynamic>> courses = [];
+
+  // Function to fetch courses from Firestore
+  Future<void> fetchCourses() async {
+    try {
+      QuerySnapshot snapshot = await FirebaseFirestore.instance.collection('MyCoursesCollection').get();
+      if (snapshot.docs.isNotEmpty) {
+        // If courses exist, populate the list
+        setState(() {
+          courses = snapshot.docs.map((doc) {
+            return {
+              'courseName': doc['courseName'],
+              'imageUrl': doc['imageUrl'],
+              'price': doc['price'],
+              'courseDuration':doc['courseDuration'],
+            };
+          }).toList();
+        });
+        log('${courses}');
+      } else {
+        // If no courses found, reset courses list
+        setState(() {
+          courses = [];
+        });
+      }
+    } catch (e) {
+      print('Error fetching courses: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -179,7 +226,9 @@ class _HomeTabScreenState extends State<HomeTabScreen> {
               ),
                   ),
                   const SizedBox(height: 15,),
-                  Text(
+                  courses.isEmpty
+                  ?const SizedBox()
+                  :Text(
                     'My Classes',
                     style: GoogleFonts.poppins(
                       fontSize: 20,
@@ -187,84 +236,100 @@ class _HomeTabScreenState extends State<HomeTabScreen> {
                     ),
                   ),
                    const SizedBox(height: 15,),
-                  GestureDetector(
+                   courses.isEmpty
+                   ?const SizedBox()
+                   :SizedBox(
+                    height: 200,
+                     child: ListView.builder(
+                      itemCount: courses.length,
+                      shrinkWrap: true,
+                      scrollDirection: Axis.horizontal,
+                      itemBuilder: (context, index) {
+
+                     int totalDays = courses[index]['courseDuration'];  // Total days for the course
+                     log("$totalDays");
+                    // Calculate the progress
+                     double progress = (completedDays / totalDays).clamp(0.0, 1.0);  // Ensure the value is between 0 and 1
+
+                        return GestureDetector(
                     onTap: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context){
-                        return const TrainingProgressTracker(completedDays: 10);
-                      }));
+                      // Navigator.push(context, MaterialPageRoute(builder: (context){
+                      //   return const TrainingProgressTracker(completedDays: 10);
+                      // }));
                     },
-                    child: Container(
-                      width: 300,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(15),
-                        color: Colors.white,
-                        boxShadow: const[
-                          BoxShadow(
-                            color: Colors.grey,
-                            blurRadius: 10,
-                    
-                          ),
-                        ],
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                            height: 150,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(15),
-                              
-                            ),
-                            child: Stack(
-                              children: [
-                                Positioned.fill( 
-                                                    child: ClipRRect(
-                                                      borderRadius: BorderRadius.circular(12),
-                                                      child: Image.asset(
-                                                        'assets/beginner_level_screen/white_belt.jpg', // Your background image
-                                                        fit: BoxFit.cover,
+                    child: Padding(
+                      padding: const EdgeInsets.only(right: 25),
+                      child: Container(
+                        width: 200,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(15),
+                          color: Colors.white,
+                          
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              height: 120,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(15),
+                                
+                              ),
+                              child: Stack(
+                                children: [
+                                  Positioned.fill( 
+                                                      child: ClipRRect(
+                                                        borderRadius: BorderRadius.circular(12),
+                                                        child: Image.asset(
+                                                          courses[index]['imageUrl'], // Your background image
+                                                          fit: BoxFit.cover,
+                                                        ),
                                                       ),
-                                                    ),
-                                                ),
-                                                
-                                    ],
+                                                  ),
+                                                  
+                                      ],
+                                    ),
                                   ),
-                                ),
-                    
-                          Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 10,horizontal: 15),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'White Belt',
-                                  style: GoogleFonts.poppins(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w500,
+                      
+                            Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 5,horizontal: 15),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    courses[index]['courseName'],
+                                    style: GoogleFonts.poppins(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w500,
+                                    ),
                                   ),
-                                ),
-                                const SizedBox(height: 10),
-                                LinearProgressIndicator(
-                                    value: 0.5, // The progress from 0.0 to 1.0 (0.0 is no progress, 1.0 is complete)
-                                    minHeight: 8, // Adjust the height of the progress bar
-                                    color: Colors.green, // Set the color of the progress bar
-                                    backgroundColor: Colors.grey[300], // Set the background color
-                                ),
-                                const SizedBox(height: 10),
-                                Text(
-                                  '32% completed',
-                                  style: GoogleFonts.poppins(
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w300,
+                                  const SizedBox(height: 10),
+                                  LinearProgressIndicator(
+                                      value: progress, // The progress from 0.0 to 1.0 (0.0 is no progress, 1.0 is complete)
+                                      minHeight: 5, // Adjust the height of the progress bar
+                                      color: Colors.green, // Set the color of the progress bar
+                                      backgroundColor: Colors.grey[300], // Set the background color
                                   ),
-                                ),
-                              ],
+                                  const SizedBox(height: 10),
+                                  Text(
+                                    '${(progress * 100).toStringAsFixed(0)}% completed', // Display percentage,
+                                    style: GoogleFonts.poppins(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w300,
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
-                  ),
+                  );
+                      },
+                     ),
+                   ),
+                  
                   const SizedBox(height: 15,),
                   Text(
                     'Classes',

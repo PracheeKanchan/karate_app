@@ -2,10 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:karate_app/view/dashboard_screens/payment_screen.dart';
 
-
-
 class CourseDetailsScreen extends StatefulWidget {
-   const CourseDetailsScreen({super.key});
+
+  final String courseName;
+  final String imageUrl;
+  final String price;
+  final bool isBuy;
+  final int courseDuration;
+
+   const CourseDetailsScreen(
+    {
+      super.key, 
+      required this.courseName,
+      required this.imageUrl,
+      required this.price,
+      required this.isBuy,
+      required this.courseDuration
+  });
 
   @override
   State<CourseDetailsScreen> createState() => _CourseDetailsScreenState();
@@ -77,7 +90,7 @@ List<Map> syllabusList=[
                   children: [
                     // 1. First Text
                     Text(
-                      'Karate - White belt',
+                      'Karate -${widget.courseName}',
                       style: GoogleFonts.poppins(
                         fontSize: 20,
                         fontWeight: FontWeight.w600,
@@ -87,7 +100,7 @@ List<Map> syllabusList=[
                     
                     // 2. Second Text
                     Text(
-                      'Exclusive course for white belt',
+                      'Exclusive course for ${widget.courseName}',
                       style: GoogleFonts.poppins(
                         fontSize: 15,
                         fontWeight: FontWeight.w300,
@@ -102,7 +115,7 @@ List<Map> syllabusList=[
                         Icon(Icons.access_time, color: Colors.blue[600]),
                         const SizedBox(width: 8),
                         Text(
-                            'Course duration - 56 days',
+                            'Course duration - ${widget.courseDuration} days',
                             style: GoogleFonts.poppins(
                               fontSize: 14,
                               fontWeight: FontWeight.w500,
@@ -257,14 +270,19 @@ List<Map> syllabusList=[
           // Non-scrollable Payment Option at the Bottom
           GestureDetector(
             onTap: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context){
-                return const PaymentScreen();
+          widget.isBuy?const SizedBox():    Navigator.push(context, MaterialPageRoute(builder: (context){
+                return  PaymentScreen(
+                  courseName: widget.courseName,
+                  imageUrl: widget.imageUrl,
+                  price: widget.price,
+                  courseDuration: widget.courseDuration,
+                );
               }));
             },
             child: Container(
               width: double.infinity,
               decoration: BoxDecoration(
-                color: Colors.blue[600],
+                color:widget.isBuy?Colors.grey: Colors.blue[600],
                 borderRadius:const BorderRadius.only(
                   topLeft: Radius.circular(15),
                   topRight: Radius.circular(15)
