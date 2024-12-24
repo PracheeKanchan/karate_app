@@ -34,26 +34,17 @@ class _LoginScreenState extends State<LoginScreen> {
 
   // Fetch Firestore data
   void getFirebaseData() async {
-    try {
-      // Fetch data from Firestore
-      QuerySnapshot response =
-          await FirebaseFirestore.instance.collection("RegisterUserInfo").get();
+    QuerySnapshot response =
+        await FirebaseFirestore.instance.collection("RegisterUserInfo").get();
+    
+    setState(() {
+      registerInfoList = response.docs
+          .map((doc) => doc.data() as Map<String, dynamic>)
+          .toList();
+    });
 
-      // Check if data exists
-      if (response.docs.isEmpty) {
-        log("No data found in Firestore.");
-      } else {
-        // Log and update the list with fetched data
-        setState(() {
-          registerInfoList = response.docs
-              .map((doc) => doc.data() as Map<String, dynamic>)
-              .toList();
-        });
-        log("Fetched Register Info List: $registerInfoList");
-      }
-    } catch (e) {
-      log("Error fetching data from Firestore: $e");
-    }
+    // Log the list after data is fetched
+    log("Register Info List: $registerInfoList");
   }
 
   @override
@@ -131,34 +122,28 @@ class _LoginScreenState extends State<LoginScreen> {
                         );
 
                         // Now that the data is fetched and available, check the email
-                        bool userFound = false;
                         for (int i = 0; i < registerInfoList.length; i++) {
                           if (registerInfoList[i]['UserEmail'] ==
                               emailController.text.trim()) {
                             await SessionData.storeSessionData(
                                 loginData: true,
                                 userName: registerInfoList[i]['UserName']);
-                            userFound = true;
                             break;
                           }
                         }
 
-                        if (userFound) {
-                          log(SessionData.userName); // Log the username for debugging
-                          // Navigate to HomeScreen
-                          Navigator.of(context).pushReplacement(
-                            MaterialPageRoute(
-                              builder: (context) {
-                                return const HomeScreen();
-                              },
-                            ),
-                          );
-                          CustomSnackbar.showCustomSnackbar(
-                              message: 'Login Successfully', context: context);
-                        } else {
-                          CustomSnackbar.showCustomSnackbar(
-                              message: 'User not found', context: context);
-                        }
+                        log(SessionData.userName); // Log the username for debugging
+                        // Navigate to HomeScreen
+                        Navigator.of(context).pushReplacement(
+                          MaterialPageRoute(
+                            builder: (context) {
+                              return const HomeScreen();
+                            },
+                          ),
+                        );
+
+                        CustomSnackbar.showCustomSnackbar(
+                            message: 'Login Successfully', context: context);
                       } on FirebaseAuthException catch (error) {
                         CustomSnackbar.showCustomSnackbar(
                             message: error.code, context: context);
