@@ -1,6 +1,5 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:karate_app/data.dart';
 import 'package:karate_app/view/auth/splash_screen.dart';
 import 'package:karate_app/view/session_data.dart';
 

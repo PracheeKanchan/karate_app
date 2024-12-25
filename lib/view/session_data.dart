@@ -4,15 +4,15 @@ class SessionData {
   static bool? isLogin;
   static String userName="";
   static bool isPurchased = false; // Default value, false until updated.
-  //static String emailId="";
+  static String userEmailId="";
 
 
   // Store session data (login state)
-  static Future<void> storeSessionData({required bool loginData,required String userName,}) async {
+  static Future<void> storeSessionData({required bool loginData,required String userName,required String userEmailId})async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     sharedPreferences.setBool("loginSession", loginData);
     sharedPreferences.setString("userName", userName);
-   // sharedPreferences.setString('emailId', emailId);
+    sharedPreferences.setString('emailId', userEmailId);
     getSessionData();
   }
 
@@ -21,7 +21,7 @@ class SessionData {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     isLogin = sharedPreferences.getBool("loginSession") ?? false; // Default to false if not set
     userName =sharedPreferences.getString("userName")??"";
-   // emailId=sharedPreferences.getString('emailId')?? "";
+    userEmailId=sharedPreferences.getString('emailId')?? "";
   }
 
   // Clear session data (logout)

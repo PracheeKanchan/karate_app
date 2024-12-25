@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
+import 'package:karate_app/view/session_data.dart';
+
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
 
@@ -46,10 +48,25 @@ class _ProfilePageState extends State<ProfilePage> {
     super.initState();
     // Set default image URL or you could use a local path
     _imageUrl = 'https://xsgames.co/randomusers/avatar.php?g=male';
+    _fetchUsername();
     _fetchUserData(); // Fetch user data when the widget is initialized
-
+    
   }
 
+// Fetch the username from SharedPreferences
+  Future<void> _fetchUsername() async {
+    setState(() {
+      // Set the username from SharedPreferences to the text controller
+      if (SessionData.userName != null && SessionData.userName.isNotEmpty) {
+        controllers['username']!.text = SessionData.userName;
+        
+      }
+      if (SessionData.userEmailId != null && SessionData.userEmailId.isNotEmpty) {
+        controllers['email']!.text = SessionData.userEmailId;
+        
+      }
+    });
+  }
 // Fetch user data from Firestore
    Future<void> _fetchUserData() async {
     
@@ -373,20 +390,24 @@ class _ProfilePageState extends State<ProfilePage> {
       ),
       child: ListTile(
         leading: Icon(icon, color: Colors.blue.shade300),
-        title: Text(
+        subtitle: value.isEmpty
+        ?Text(
           label,
           style: TextStyle(
             color: Colors.grey[600],
             fontSize: 14,
           ),
-        ),
-        subtitle: Text(
+        )
+        :null,
+        title: value.isNotEmpty
+        ?Text(
           value,
           style: const TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.bold,
           ),
-        ),
+        )
+        :null,
       ),
     );
   }

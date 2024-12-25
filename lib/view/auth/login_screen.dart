@@ -23,28 +23,19 @@ class _LoginScreenState extends State<LoginScreen> {
 
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
-  List<Map<String, dynamic>> registerInfoList = [];
-
   @override
   void initState() {
     super.initState();
-    // Fetch the user data from Firestore during initialization
-    getFirebaseData();
   }
 
-  // Fetch Firestore data
-  void getFirebaseData() async {
+  // Fetch Firestore data asynchronously and return as Future
+  Future<List<Map<String, dynamic>>> getFirebaseData() async {
     QuerySnapshot response =
         await FirebaseFirestore.instance.collection("RegisterUserInfo").get();
     
-    setState(() {
-      registerInfoList = response.docs
-          .map((doc) => doc.data() as Map<String, dynamic>)
-          .toList();
-    });
-
-    // Log the list after data is fetched
-    log("Register Info List: $registerInfoList");
+    return response.docs
+        .map((doc) => doc.data() as Map<String, dynamic>)
+        .toList();
   }
 
   @override
@@ -110,9 +101,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 padding: const EdgeInsets.symmetric(horizontal: 30),
                 child: GestureDetector(
                   onTap: () async {
-                    // Ensure the list is not empty and the fields are not empty
-                    if (registerInfoList.isNotEmpty &&
-                        emailController.text.trim().isNotEmpty &&
+                    if (emailController.text.trim().isNotEmpty &&
                         passwordController.text.trim().isNotEmpty) {
                       try {
                         UserCredential userCredential =
@@ -121,29 +110,40 @@ class _LoginScreenState extends State<LoginScreen> {
                           password: passwordController.text,
                         );
 
-                        // Now that the data is fetched and available, check the email
+                        // Fetch the user data after successful login using FutureBuilder
+                        List<Map<String, dynamic>> registerInfoList = await getFirebaseData();
+
+                        bool userFound = false;
                         for (int i = 0; i < registerInfoList.length; i++) {
-                          if (registerInfoList[i]['UserEmail'] ==
-                              emailController.text.trim()) {
+                          if (registerInfoList[i]['UserEmail'] == emailController.text.trim()) {
                             await SessionData.storeSessionData(
-                                loginData: true,
-                                userName: registerInfoList[i]['UserName']);
+                              loginData: true,
+                              userName: registerInfoList[i]['UserName'],
+                              userEmailId: registerInfoList[i]['UserEmail'],
+                            );
+                            userFound = true;
                             break;
                           }
                         }
 
-                        log(SessionData.userName); // Log the username for debugging
-                        // Navigate to HomeScreen
-                        Navigator.of(context).pushReplacement(
-                          MaterialPageRoute(
-                            builder: (context) {
-                              return const HomeScreen();
-                            },
-                          ),
-                        );
+                        if (userFound) {
+                          log(SessionData.userName); // Log the username for debugging
+                          log(SessionData.userEmailId);
+                          // Navigate to HomeScreen after successful login
+                          Navigator.of(context).pushReplacement(
+                            MaterialPageRoute(
+                              builder: (context) {
+                                return const HomeScreen();
+                              },
+                            ),
+                          );
 
-                        CustomSnackbar.showCustomSnackbar(
-                            message: 'Login Successfully', context: context);
+                          CustomSnackbar.showCustomSnackbar(
+                              message: 'Login Successfully', context: context);
+                        } else {
+                          CustomSnackbar.showCustomSnackbar(
+                              message: 'User not found', context: context);
+                        }
                       } on FirebaseAuthException catch (error) {
                         CustomSnackbar.showCustomSnackbar(
                             message: error.code, context: context);

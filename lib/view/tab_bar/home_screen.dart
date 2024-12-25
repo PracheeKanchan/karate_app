@@ -33,6 +33,9 @@ int _selectedIndex = 0;
     super.initState();
     // _loadUsername();
     //fetchCourses();
+    setState(() {
+      SessionData.userName;
+    });
   }
 
   
@@ -73,7 +76,7 @@ int _selectedIndex = 0;
                   GestureDetector(
                     onTap: () async{
                       // await SessionData.clearSessionData();
-                      SessionData.storeSessionData(loginData: false, userName: "");
+                      SessionData.storeSessionData(loginData: false, userName: "",userEmailId: "");
                       CustomSnackbar.showCustomSnackbar(message: "Log out sucessfully", context: context);
                       Navigator.of(context).pushReplacement(
                         MaterialPageRoute(builder: (context){
@@ -183,7 +186,7 @@ class _HomeTabScreenState extends State<HomeTabScreen> {
             };
           }).toList();
         });
-        log('${courses}');
+        log('$courses');
       } else {
         // If no courses found, reset courses list
         setState(() {
